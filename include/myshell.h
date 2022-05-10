@@ -10,13 +10,6 @@
 #include "InjPos.h"
 #include "RegPos.h"
 
-#define RL_BUFSIZE 1024
-#define TOK_BUFSIZE 64
-#define TOK_DELIM " \t\r\n\a" 
-#define DAY_SEC 24*60*60
-#define WEEK_SEC 7*24*60*60
-#define MONTH_SEC 30*24*60*60
-
 using namespace std;
 
 class Test{

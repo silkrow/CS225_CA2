@@ -25,7 +25,7 @@
 using namespace std;
 
 Test::Test(){
-	tt = 0;
+	tt = 0; // See include/myshell.h for reference:)
 	t_last = 0;
 	rnd = true;
 }
@@ -280,6 +280,16 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 	if ((strcmp(args[0], "when") == 0 || strcmp(args[0], "w") == 0) && args[1] == NULL){
 		printf("The time now is %s", ctime(&tt));
 		return 1;
+	}
+
+	/* Added for CA2. */
+	if (strcmp(args[0], "tree") == 0 && args[1] == NULL){
+		/* Print the trees. */
+		return 1;
+	}
+
+	if (strcmp(args[0], "search") == 0 && args[1] == NULL){
+		/* Ask for the choice. */
 	}
 
 	if ((strcmp(args[0], "generate") == 0 || strcmp(args[0], "g") == 0) && args[1] == NULL) { 
