@@ -1,3 +1,11 @@
+/* Modifications basing on CA1: 
+ *	In person generation:
+ *		random generation adding the type of injection
+ *		support modifying the type of injection
+ *	Command:
+ *		support checking the tree structure
+ *	
+ * */
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
