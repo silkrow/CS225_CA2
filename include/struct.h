@@ -9,8 +9,8 @@
 typedef struct btree_nodes{
 	MeTPerson *k[2 * M - 1]; // METsystem
 	struct btree_nodes *p[2 * M];
-	int num;
-	bool is_leaf;
+	int num; // total number of children
+	bool is_leaf; // 1-leaf
 	struct btree_nodes *prev;  // use one struct just for simple, B+Tree used
 	struct btree_nodes *next;  // for B+Tree 
 	

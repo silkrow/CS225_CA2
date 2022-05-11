@@ -10,7 +10,7 @@ btree_node* BPlusTree::btree_node_new(){
         return NULL;
     }
 
-    for(int i = 0; i < 2 * M -1; i++) {
+    for(int i = 0; i < 2 * M - 1; i++) {
         node->k[i] = 0;
     }
 
@@ -88,7 +88,7 @@ int BPlusTree::btree_split_child(btree_node *parent, int pos, btree_node *child)
 void BPlusTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
     if(true == node->is_leaf) {
         int pos = node->num;
-        while(pos >= 1 && target < node->k[pos-1]) {
+        while(pos >= 1 && target->cmpMeTPer(node->k[pos - 1]) == 0) {
             node->k[pos] = node->k[pos-1];
             pos--;
         }
@@ -99,13 +99,13 @@ void BPlusTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
 		
     } else {
         int pos = node->num;
-        while(pos > 0 && target < node->k[pos-1]) {
+        while(pos > 0 && target->cmpMeTPer(node->k[pos - 1]) == 0) {
             pos--;
         }
 
         if(2 * M -1 == node->p[pos]->num) {
             btree_split_child(node, pos, node->p[pos]);
-            if(target > node->k[pos]) {
+            if(1 == target->cmpMeTPer(node->k[pos])){
                 pos++;
             }
         }
@@ -130,14 +130,13 @@ btree_node* BPlusTree::btree_insert(btree_node *root, MeTPerson *target){
         btree_split_child(node, 0, root);
         btree_insert_nonfull(node, target);
         return node;
-    } else {
+    } else{
         btree_insert_nonfull(root, target);    
         return root;
     }
 }
 
-void BPlusTree::btree_merge_child(btree_node *root, int pos, btree_node *y, btree_node *z)
-{
+void BPlusTree::btree_merge_child(btree_node *root, int pos, btree_node *y, btree_node *z){
 	if(true == y->is_leaf) {
 		y->num = 2 * M - 2;
 		for(int i = M; i < 2 * M - 1; i++) {
@@ -174,8 +173,7 @@ btree_node *BPlusTree::btree_delete(btree_node *root, MeTPerson *target){
 	if(1 == root->num) {
 		btree_node *y = root->p[0];
 		btree_node *z = root->p[1];
-		if(NULL != y && NULL != z &&
-				M - 1 == y->num && M - 1 == z->num) {
+		if(NULL != y && NULL != z && M - 1 == y->num && M - 1 == z->num) {
 			btree_merge_child(root, 0, y, z);
 			free(root);
 			btree_delete_nonone(y, target);
@@ -191,10 +189,10 @@ btree_node *BPlusTree::btree_delete(btree_node *root, MeTPerson *target){
 }
 
 void BPlusTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
-	if(true == root->is_leaf) {
+	if(true == root->is_leaf){
 		int i = 0;
-		while(i < root->num && target > root->k[i]) i++;
-		if(target == root->k[i]) {
+		while(i < root->num && target->cmpMeTPer(root->k[i])) i++;
+		if(target == root->k[i]){
 			for(int j = i + 1; j < 2 * M - 1; j++) {
 				root->k[j-1] = root->k[j];
 			}
@@ -207,7 +205,7 @@ void BPlusTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
 	} else {
 		int i = 0;
 		btree_node *y = NULL, *z = NULL;
-		while(i < root->num && target > root->k[i]) i++;
+		while(i < root->num && target->cmpMeTPer(root->k[i])) i++;
 		
 		y = root->p[i];
 		if(i < root->num) {
