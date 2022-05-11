@@ -19,6 +19,9 @@ class MeTPerson{
     bool weekUpdate; // for week report
     bool monthUpdate; // for month report
 
+	/* Added for CA2. */
+	int inj_type; // a number 1-3 indicating the type of injection. 
+
     string name; 
     string phonen; 
     string WeChatn;
