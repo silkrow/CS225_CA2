@@ -4,12 +4,14 @@
 #define M 2 // degree
 
 // Btree's node
+#include "MeTPerson.h"
+
 typedef struct btree_nodes{
-	int k[2 * M - 1];
+	MeTPerson *k[2 * M - 1]; // METsystem
 	struct btree_nodes *p[2 * M];
 	int num;
 	bool is_leaf;
-	struct btree_nodes *prev;  // use one struct just for simple,��2������B+Tree used
+	struct btree_nodes *prev;  // use one struct just for simple, B+Tree used
 	struct btree_nodes *next;  // for B+Tree 
 	
 } btree_node;

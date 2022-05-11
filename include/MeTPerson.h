@@ -74,6 +74,7 @@ class MeTPerson{
     bool delmark;
     
     NodePerson* Fibnode;
+
 };
 
 #endif
