@@ -289,7 +289,7 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 	}
 
 	if (strcmp(args[0], "search") == 0 && args[1] == NULL){
-		/* Ask for the choice. */
+		/* Ask for the choice, support searching by three different keywords. */
 	}
 
 	if ((strcmp(args[0], "generate") == 0 || strcmp(args[0], "g") == 0) && args[1] == NULL) { 
@@ -664,6 +664,9 @@ void Test::generate_single(MeTsystem* mySys, float r_I_patient, bool write, FILE
 	newm->idRegpos = reg;										// registration station 
 	int gen_id = (rand()%4 + 1)*100000 + rand()%100000;
 	newm->idNumber = gen_id;								 	// id
+	
+	/* Added for CA2. */
+	newm->inj_type = rand()%3 + 1;								// type of injection
 
 	/* Name generation */
 	string gen_name = "";
