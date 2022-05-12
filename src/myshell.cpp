@@ -290,6 +290,22 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 
 	if (strcmp(args[0], "search") == 0 && args[1] == NULL){
 		/* Ask for the choice, support searching by three different keywords. */
+		printf("1: by ..., 2: by ..., 3: by ...\n");
+		int choice;
+		char s[100];
+
+		fgets(s, 100, stdin);
+		choice = atoi(s);
+		switch(choice){
+			case 1:
+				return 1;
+			case 2:
+				return 1;
+			case 3:
+				return 1;	
+			default: 
+				return 1;
+		}
 	}
 
 	if ((strcmp(args[0], "generate") == 0 || strcmp(args[0], "g") == 0) && args[1] == NULL) { 
@@ -332,6 +348,10 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 				mySys->dbPerson[pid]->priLetter, 
 				mySys->dbPerson[pid]->priDate.c_str(),
 				mySys->dbPerson[pid]->tmpSt);
+
+			/* Added for CA2. */
+			printf("treatment type: %d\n",
+				mySys->dbPerson[pid]->inj_type);
 		}
 		return 1;
 	}
