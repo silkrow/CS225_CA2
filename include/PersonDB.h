@@ -1,3 +1,4 @@
+
 #ifndef PER_DB
 #define PER_DB
 
@@ -9,10 +10,6 @@ using namespace std;
 class PerDB{
     public:
     PerDB();
-
-    int cntBlocks; // total number of blocks
-    const int maincap = 10; // capacity for main block
-    const int ofcap = 3; // capacity for overflow block
     
     IntNode* topNode;
     void createBlock(); // initialize
