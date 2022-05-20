@@ -3,6 +3,7 @@
 #include "struct.h"
 #include "Tree.h"
 #include "MeTPerson.h"
+#include "PersonDB.h"
 
 class BTree :
 	public Tree

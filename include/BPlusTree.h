@@ -2,6 +2,7 @@
 #define BP_TREE
 #include "struct.h"
 #include "Tree.h"
+#include "PersonDB.h"
 
 class BPlusTree :
 	public Tree
@@ -28,6 +29,7 @@ protected:
 	 * @param root: root of tree
 	 */
 	void btree_linear_print(btree_node *root);
+	MeTPerson* popnPer(int num, PerDB* db);
 
 public:
 	BPlusTree(void);

@@ -1,5 +1,6 @@
 #include "BTree.h"
 #include "struct.h"
+#include "PersonDB.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -66,7 +67,7 @@ void BTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
 	if(1 == node->is_leaf){ // insert now
 		int pos = node->num; // add new child to node
 		//while(pos >= 1 && target < node->k[pos-1]) {
-		while(pos >= 1 && target->cmpMeTPer(node->k[pos - 1]) == 0) {	
+		while(pos >= 1 && target->cmpBTree(node->k[pos - 1]) == 0) {	
 			node->k[pos] = node->k[pos-1];
 			pos--;
 		}
@@ -78,14 +79,14 @@ void BTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
 		
 	} else {
 		int pos = node->num;
-		while(pos > 0 && target->cmpMeTPer(node->k[pos - 1]) == 0) {
+		while(pos > 0 && target->cmpBTree(node->k[pos - 1]) == 0) {
 			pos--;
 		}
 
 		if(2 * M - 1 == node->p[pos]->num) {
 			btree_split_child(node, pos, node->p[pos]);
 			//if(target > node->k[pos]) {
-			if(1 == target->cmpMeTPer(node->k[pos])){
+			if(1 == target->cmpBTree(node->k[pos])){
 				pos++;
 			}
 		}
@@ -158,7 +159,7 @@ void BTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
 	if(true == root->is_leaf) {
 		int i = 0;
 		//while(i < root->num && target > root->k[i]) i++;
-		while(i < root->num && target->cmpMeTPer(root->k[i])) i++;
+		while(i < root->num && target->cmpBTree(root->k[i])) i++;
 		if(target == root->k[i]){
 			for(int j = i + 1; j < 2 * M - 1; j++) {
 				root->k[j-1] = root->k[j];
@@ -173,7 +174,7 @@ void BTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
 	} else {
 		int i = 0;
 		btree_node *y = NULL, *z = NULL;
-		while(i < root->num && target->cmpMeTPer(root->k[i])) i++;
+		while(i < root->num && target->cmpBTree(root->k[i])) i++;
 		if(i < root->num && target == root->k[i]) {
 			y = root->p[i];
 			z = root->p[i+1];

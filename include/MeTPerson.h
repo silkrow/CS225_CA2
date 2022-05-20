@@ -7,6 +7,8 @@
 #include<algorithm>
 #include "NodePerson.h"
 #include "FibHeap.h"
+#include "PersonDB.h"
+#include "IntNode.h"
 
 using namespace std;
 
@@ -77,6 +79,15 @@ class MeTPerson{
     bool delmark;
     
     NodePerson* Fibnode;
+
+    // for DB
+    MeTPerson* lhc;
+    bool tombmark;
+    IntNode* dbblock;
+    
+
+    // for Btree
+    bool cmpBTree(MeTPerson* p);
 
 };
 

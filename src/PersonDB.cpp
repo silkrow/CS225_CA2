@@ -15,7 +15,7 @@ PerDB::PerDB(){
 void PerDB::createBlock(){
 }
 
-void PerDB::popTopn(int num){
+MeTPerson* PerDB::popTopn(int num){
 }
 
  

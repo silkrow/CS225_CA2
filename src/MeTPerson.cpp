@@ -16,6 +16,8 @@ MeTPerson::MeTPerson(){
     this->watime = 0;
     this->priLetter = 0;
     this->delmark = 0;
+    this->tombmark = 0;
+    this->lhc = NULL;
 }
 
 int MeTPerson::iniMeTPerson(int pid, int regpos, string tt){
@@ -330,6 +332,12 @@ bool MeTPerson::cmpMeTPer(MeTPerson* p2){
 
     // Third, compare registration time
     return PersonComp(p1, p2);
+}
+
+bool MeTPerson::cmpBTree(MeTPerson* p){
+    // return 0 if this id is smaller than p
+    if(this->pid < p->pid) return 0;
+    return 1;
 }
 
 void MeTPerson::withdraw(FibHeap* FH){

@@ -1,5 +1,6 @@
 #include "BPlusTree.h"
 #include "struct.h"
+#include "PersonDB.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -86,8 +87,8 @@ int BPlusTree::btree_split_child(btree_node *parent, int pos, btree_node *child)
 }
 
 void BPlusTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
-    if(true == node->is_leaf) {
-        int pos = node->num;
+    if(true == node->is_leaf){
+        /*int pos = node->num;
         while(pos >= 1 && target->cmpMeTPer(node->k[pos - 1]) == 0) {
             node->k[pos] = node->k[pos-1];
             pos--;
@@ -95,7 +96,9 @@ void BPlusTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
 
         node->k[pos] = target;
         node->num += 1;
-		btree_node_num+=1;
+		btree_node_num+=1;*/
+		IntNode* tmp = node->block;
+		tmp->insertB(target); // judge split
 		
     } else {
         int pos = node->num;
@@ -397,3 +400,6 @@ BPlusTree::~BPlusTree(void)
 	
 }
 
+MeTPerson* BPlusTree::popnPer(int num, PerDB* db){
+	return db->popTopn(num);
+}
