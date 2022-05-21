@@ -13,6 +13,11 @@ IntNode::IntNode(){
     maincnt=0;
     ofcnt=0;
     tombcnt=0;
+
+	for (int i = 0; i < 13; i++)
+		mainB[i] = new MeTPerson();
+	for (int i = 0; i < 5; i++)
+		ofB[i] = new MeTPerson();
 }
 
 void IntNode::Adjustof(){
@@ -32,19 +37,11 @@ int IntNode::Num(){
 }
 
 void IntNode::insertB(MeTPerson* tmp){
-    if (maincnt<maincap/mergefactor){
-        mainB[maincnt++]=tmp;
-        return;
-    }
     if (ofcnt<ofcap){
-        ofB[ofcnt++]=tmp;
+        ofB[ofcnt++]=tmp; printf("line45\n"); 
         return;
     }
     this->sortB();
-    if (maincnt<maincap/mergefactor){
-        mainB[maincnt++]=tmp;
-        return;
-    }
     ofB[ofcnt++]=tmp;
 }
 

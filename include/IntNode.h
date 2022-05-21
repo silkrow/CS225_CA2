@@ -1,6 +1,10 @@
 #ifndef INT_NODE
 #define INT_NODE
 
+
+#define maincap 10
+#define ofcap 3
+#define mergefactor 8
 //#include "MeTPerson.h"
 #include<vector>
 
@@ -17,9 +21,9 @@ class IntNode{
     int ofcnt; // real size of overflow block, <=ofcap
     int tombcnt;
 
-    const int maincap = 10; // capacity for main block
-    const int ofcap = 3; // capacity for overflow block
-    const int mergefactor=8;    //If less than 1/n in a block, merge with the right one 
+    //const int maincap = 10; // capacity for main block
+    //const int ofcap = 3; // capacity for overflow block
+    //const int mergefactor=8;    //If less than 1/n in a block, merge with the right one 
 
     IntNode* leftNeighbor;
     IntNode* rightNeighbor;
