@@ -1,7 +1,7 @@
 #ifndef BP_TREE
 #define BP_TREE
 #include "PersonDB.h"
-#include "MeTPerson.h"
+//#include "MeTPerson.h"
 #include "BPNode.h"
 #define order 4
 #define LEAF true
@@ -10,6 +10,7 @@
 #include <queue>
 using namespace std;
 
+class MeTPerson;
 
 //template<typename MeTPerson*, typename MeTPerson*>
 class BPTree{

@@ -1,5 +1,6 @@
 #include "MeTPerson.h"
 #include "FibHeap.h"
+#include "BTree.h"
 #include <iostream>
 #include <cstring>
 #include <sstream>
@@ -18,6 +19,7 @@ MeTPerson::MeTPerson(){
     this->delmark = 0;
     this->tombmark = 0;
     this->lhc = NULL;
+    this->dbblock = NULL;
 }
 
 int MeTPerson::iniMeTPerson(int pid, int regpos, string tt){

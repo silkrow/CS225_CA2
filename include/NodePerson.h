@@ -1,10 +1,12 @@
 #ifndef NOD_PER
 #define NOD_PER
 
-using namespace std;
-//#include "MeTPerson.h"
-class MeTPerson;
 
+//#include "MeTPerson.h"
+
+//using namespace std;
+
+class MeTPerson;
 
 class NodePerson{
     public:

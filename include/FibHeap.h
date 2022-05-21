@@ -1,12 +1,17 @@
 #ifndef FIB_HEA
 #define FIB_HEA
 
+
+
 #include "NodePerson.h"
 //#include "MeTPerson.h"
 
 
-using namespace std;
+
+
 class MeTPerson;
+
+//using namespace std;
 
 class FibHeap{
     public:

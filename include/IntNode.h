@@ -1,10 +1,12 @@
 #ifndef INT_NODE
 #define INT_NODE
 
-#include "MeTPerson.h"
+//#include "MeTPerson.h"
 #include<vector>
 
 using namespace std;
+
+class MeTPerson;
 
 class IntNode{
     public:

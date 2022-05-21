@@ -1,12 +1,14 @@
 #ifndef BP_NODE
 #define BP_NODE
 #include "PersonDB.h"
-#include "MeTPerson.h"
+//#include "MeTPerson.h"
 
 #include <iostream>
 #include <vector>
 #include <queue>
 using namespace std;
+
+class MeTPerson;
 
 class Node{
 public:

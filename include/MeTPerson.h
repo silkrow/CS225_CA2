@@ -10,9 +10,13 @@
 #include "PersonDB.h"
 #include "IntNode.h"
 #include "BPlusTree.h"
-#include "BTree.h"
+//#include "BTree.h"
+#include "BPNode.h"
+//#include "Tree.h"
 
 using namespace std;
+
+class BTree;
 
 class MeTPerson{
     public:

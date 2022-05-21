@@ -1,12 +1,13 @@
 #include "BTree.h"
 #include "struct.h"
 #include "PersonDB.h"
+#include "MeTPerson.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 
-btree_node* BTree::btree_node_new(){ // create a b-tree node
-	btree_node* node = (btree_node *)malloc(sizeof(btree_node));
+btree_nodes* BTree::btree_nodes_new(){ // create a b-tree node
+	btree_nodes* node = (btree_nodes *)malloc(sizeof(btree_nodes));
 	if(NULL == node) return NULL; // fail to malloc
 	for(int i = 0; i < 2 * M - 1; i++){
 		node->k[i] = NULL;
@@ -21,14 +22,14 @@ btree_node* BTree::btree_node_new(){ // create a b-tree node
 	return node;
 }
 
-btree_node* BTree::btree_create(){ // create a b-tree
-	btree_node *node = btree_node_new(); // create the root
+btree_nodes* BTree::btree_create(){ // create a b-tree
+	btree_nodes *node = btree_nodes_new(); // create the root
 	if(NULL == node) return NULL; // fail to malloc
 	return node; // return root
 }
 
-int BTree::btree_split_child(btree_node *parent, int pos, btree_node *child){
-	btree_node *new_child = btree_node_new();
+int BTree::btree_split_child(btree_nodes *parent, int pos, btree_nodes *child){
+	btree_nodes *new_child = btree_nodes_new();
 	if(NULL == new_child) return -1; // fail to malloc
 
 	new_child->is_leaf = child->is_leaf;
@@ -63,7 +64,7 @@ int BTree::btree_split_child(btree_node *parent, int pos, btree_node *child){
 	return 0; // successfully
 }
 
-void BTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
+void BTree::btree_insert_nonfull(btree_nodes *node, MeTPerson *target){
 	if(1 == node->is_leaf){ // insert now
 		int pos = node->num; // add new child to node
 		//while(pos >= 1 && target < node->k[pos-1]) {
@@ -74,7 +75,7 @@ void BTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
 
 		node->k[pos] = target;
 		node->num += 1;
-		btree_node_num += 1;
+		btree_nodes_num += 1;
 		return;
 		
 	} else {
@@ -95,11 +96,11 @@ void BTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
 	}
 }
 
-btree_node* BTree::btree_insert(btree_node *root, MeTPerson *target){
+btree_nodes* BTree::btree_insert(btree_nodes *root, MeTPerson *target){
 	if(NULL == root) return NULL;
 
 	if(2 * M - 1 == root->num) { // root is full
-		btree_node* node = btree_node_new();
+		btree_nodes* node = btree_nodes_new();
 		if(NULL == node) {
 			return root;
 		}
@@ -114,7 +115,7 @@ btree_node* BTree::btree_insert(btree_node *root, MeTPerson *target){
 	}
 }
 
-void BTree::btree_merge_child(btree_node *root, int pos, btree_node *y, btree_node *z){
+void BTree::btree_merge_child(btree_nodes *root, int pos, btree_nodes *y, btree_nodes *z){
 	y->num = 2 * M - 1;
 	for(int i = M; i < 2 * M - 1; i++) {
 		y->k[i] = z->k[i-M];
@@ -136,10 +137,10 @@ void BTree::btree_merge_child(btree_node *root, int pos, btree_node *y, btree_no
 }
 
 
-btree_node* BTree::btree_delete(btree_node* root, MeTPerson *target){
+btree_nodes* BTree::btree_delete(btree_nodes* root, MeTPerson *target){
 	if(1 == root->num) {
-		btree_node *y = root->p[0];
-		btree_node *z = root->p[1];
+		btree_nodes *y = root->p[0];
+		btree_nodes *z = root->p[1];
 		if(NULL != y && NULL != z && M - 1 == y->num && M - 1 == z->num) {
 			btree_merge_child(root, 0, y, z);
 			free(root);
@@ -155,7 +156,7 @@ btree_node* BTree::btree_delete(btree_node* root, MeTPerson *target){
 	}
 }
 
-void BTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
+void BTree::btree_delete_nonone(btree_nodes *root, MeTPerson *target){
 	if(true == root->is_leaf) {
 		int i = 0;
 		//while(i < root->num && target > root->k[i]) i++;
@@ -166,14 +167,14 @@ void BTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
 			}
 			root->num -= 1;
 			
-			btree_node_num-=1;
+			btree_nodes_num-=1;
 			
 		} else{ // cannot find even in leaf
 			printf("target not found\n");
 		}
 	} else {
 		int i = 0;
-		btree_node *y = NULL, *z = NULL;
+		btree_nodes *y = NULL, *z = NULL;
 		while(i < root->num && target->cmpBTree(root->k[i])) i++;
 		if(i < root->num && target == root->k[i]) {
 			y = root->p[i];
@@ -195,7 +196,7 @@ void BTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
 			if(i < root->num) {
 				z = root->p[i+1];
 			}
-			btree_node *p = NULL;
+			btree_nodes *p = NULL;
 			if(i > 0) {
 				p = root->p[i-1];
 			}
@@ -220,23 +221,23 @@ void BTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
 	}
 }
 
-MeTPerson * BTree::btree_search_predecessor(btree_node *root){
-	btree_node *y = root;
+MeTPerson * BTree::btree_search_predecessor(btree_nodes *root){
+	btree_nodes *y = root;
 	while(false == y->is_leaf) {
 		y = y->p[y->num];
 	}
 	return y->k[y->num-1];
 }
 
-MeTPerson * BTree::btree_search_successor(btree_node *root){
-	btree_node *z = root;
+MeTPerson * BTree::btree_search_successor(btree_nodes *root){
+	btree_nodes *z = root;
 	while(false == z->is_leaf) {
 		z = z->p[0];
 	}
 	return z->k[0];
 }
 
-void BTree::btree_shift_to_right_child(btree_node *root, int pos, btree_node *y, btree_node *z){
+void BTree::btree_shift_to_right_child(btree_nodes *root, int pos, btree_nodes *y, btree_nodes *z){
 	z->num += 1;
 	for(int i = z->num -1; i > 0; i--) {
 		z->k[i] = z->k[i-1];
@@ -254,7 +255,7 @@ void BTree::btree_shift_to_right_child(btree_node *root, int pos, btree_node *y,
 	y->num -= 1;
 }
 
-void BTree::btree_shift_to_left_child(btree_node *root, int pos, btree_node *y, btree_node *z){
+void BTree::btree_shift_to_left_child(btree_nodes *root, int pos, btree_nodes *y, btree_nodes *z){
 	y->num += 1;
 	y->k[y->num-1] = root->k[pos];
 	root->k[pos] = z->k[0];
@@ -273,30 +274,30 @@ void BTree::btree_shift_to_left_child(btree_node *root, int pos, btree_node *y, 
 	z->num -= 1;
 }
 
-void BTree::btree_inorder_print(btree_node *root) {
+void BTree::btree_inorder_print(btree_nodes *root) {
 	if(NULL != root) {
 		btree_inorder_print(root->p[0]);
 		for(int i = 0; i < root->num; i++) {
-			printf("%d ", root->k[i]);
+			printf("%d ", root->k[i]->pid);
 			btree_inorder_print(root->p[i+1]);
 		}
 	}
 }
 
-void BTree::btree_level_display(btree_node *root) {
+void BTree::btree_level_display(btree_nodes *root) {
 	// just for simplicty, can't exceed 200 nodes in the tree
-	btree_node *queue[200] = {NULL};
+	btree_nodes *queue[200] = {NULL};
 	int front = 0;
 	int rear = 0;
 
 	queue[rear++] = root;
 
 	while(front < rear) {
-		btree_node *node = queue[front++];
+		btree_nodes *node = queue[front++];
 
 		printf("[");
 		for(int i = 0; i < node->num; i++) {
-			printf("%d ", node->k[i]);
+			printf("%d ", node->k[i]->pid);
 		}
 		printf("]");
 
@@ -309,7 +310,7 @@ void BTree::btree_level_display(btree_node *root) {
 	printf("\n");
 }
 
-void BTree::Save(btree_node *root) {
+void BTree::Save(btree_nodes *root) {
 	
 }
 
