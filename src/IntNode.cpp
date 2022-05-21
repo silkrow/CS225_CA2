@@ -113,20 +113,20 @@ void IntNode::mergeB(){
     pt=this->rightNeighbor;
     pt->sortB();
     
-    MeTPerson* a[20];
+    MeTPerson* a[23];
     int p1=0,p2=0,p=0;
 
     while (p1<this->maincnt||p2<pt->maincnt){
         if (p1==this->maincnt){
-            a[p++]=pt->ofB[p2++];
+            a[p++]=pt->mainB[p2++];
             continue;
         }
         if (p2==pt->maincnt){
             a[p++]=this->mainB[p1++];
             continue;
         }
-        if (this->mainB[p1]->cmpMeTPer(pt->ofB[p2]))
-            a[p++]=pt->ofB[p2++];
+        if (this->mainB[p1]->cmpMeTPer(pt->mainB[p2]))
+            a[p++]=pt->mainB[p2++];
         else
             a[p++]=this->mainB[p1++];
     }
@@ -159,7 +159,7 @@ void IntNode::mergeB(){
         pt->mainB[i]=a[(p+1)/2+i],pt->mainB[i]->dbblock=pt;
 }
 void IntNode::splitB(){
-    MeTPerson* a[20];
+    MeTPerson* a[23];
     int p1=0,p2=0,p=0;
     Adjustof();
     while (p1<maincnt||p2<ofcnt){
@@ -207,7 +207,7 @@ void IntNode::sortB(){
         this->splitB();
         return;
     }
-    MeTPerson* a[20];
+    MeTPerson* a[23];
     int p1=0,p2=0,p=0;
     Adjustof();
     while (p1<maincnt||p2<ofcnt){
