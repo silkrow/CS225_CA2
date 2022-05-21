@@ -12,19 +12,6 @@ using namespace std;
 
 
 //template<typename MeTPerson*, typename MeTPerson*>
-class Node{
-public:
-    bool leaf;
-    Node *parent;   //for non-root only
-    Node *next;     //for leaf only
-    Node *last;     //for leaf only
-    vector<MeTPerson*> key;
-    vector<Node*> ptr2node;    //for non-leaf only
-    vector<MeTPerson*> ptr2val;     //for leaf only
-    Node(bool _leaf = false);
-};
-
-//template<typename MeTPerson*, typename MeTPerson*>
 class BPTree{
 private:
     Node *root;
