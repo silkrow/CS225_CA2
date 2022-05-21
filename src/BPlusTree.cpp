@@ -1,5 +1,6 @@
 #include "BPlusTree.h"
 #include "PersonDB.h"
+#include "BPNode.h"
 #include <iostream>
 #include <vector>
 #include <queue>
