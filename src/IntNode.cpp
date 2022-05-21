@@ -180,7 +180,7 @@ void IntNode::splitB(){
             a[p++]=mainB[p1++];
     }
 
-    IntNode* pt_r;
+    IntNode* pt_r=new IntNode;
     pt_r->maincnt=p/2;
     pt_r->ofcnt=0;
     pt_r->tombcnt=0;
