@@ -7,6 +7,8 @@
 #include "FibHeap.h"
 #include "UpAge.h"
 #include "PriLet.h"
+#include "BPlusTree.h"
+#include "BTree.h"
 #include<queue>
 
 class MeTsystem {
@@ -68,9 +70,11 @@ class MeTsystem {
 
         bool datecmp(string s1, string s2);
 
-        FibHeap* FH;
+        //FibHeap* FH;
         PriLet* PL;
         UpAge* UA;
+        BPTree* BPT;
+        BTree* BT;
 };
 
 #endif

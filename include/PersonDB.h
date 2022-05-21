@@ -12,7 +12,7 @@ class PerDB{
     PerDB();
     
     IntNode* topNode;
-    void createBlock(); // initialize
+    IntNode* createBlock(); // initialize
     MeTPerson* popTopn(int num); // get top num elements in the database
     
     void insertPer(MeTPerson* tmp, IntNode* block);

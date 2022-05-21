@@ -1,40 +1,51 @@
 #ifndef BP_TREE
 #define BP_TREE
-#include "struct.h"
-#include "Tree.h"
 #include "PersonDB.h"
+#include "MeTPerson.h"
+#define order 4
+#define LEAF true
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
 
-class BPlusTree :
-	public Tree
-{
-protected:
-	virtual btree_node* btree_create();
-	virtual btree_node* btree_node_new();
-	virtual int btree_split_child(btree_node *parent, int pos, btree_node *child);
-	virtual void btree_insert_nonfull(btree_node *node, MeTPerson *target);
-	virtual void btree_merge_child(btree_node *root, int pos, btree_node *y, btree_node *z);
-	virtual void btree_delete_nonone(btree_node *root, MeTPerson *target);
-	virtual MeTPerson *btree_search_successor(btree_node *root);
-	virtual MeTPerson *btree_search_predecessor(btree_node *root);
-	virtual void btree_shift_to_left_child(btree_node *root, int pos, btree_node *y, btree_node *z);	
-	virtual void btree_shift_to_right_child(btree_node *root, int pos, btree_node *y, btree_node *z);
-	virtual btree_node* btree_insert(btree_node *root, MeTPerson *target);
-	virtual btree_node *btree_delete(btree_node *root, MeTPerson *target);
-	virtual void btree_inorder_print(btree_node *root);
-	virtual void btree_level_display(btree_node *root);
- 	virtual void Save(btree_node *root);
-	/**
-	 * @brief print tree linearly using prev/next pointer
-	 *
-	 * @param root: root of tree
-	 */
-	void btree_linear_print(btree_node *root);
-	MeTPerson* popnPer(int num, PerDB* db);
+
+//template<typename MeTPerson*, typename MeTPerson*>
+class Node{
+public:
+    bool leaf;
+    Node *parent;   //for non-root only
+    Node *next;     //for leaf only
+    Node *last;     //for leaf only
+    vector<MeTPerson*> key;
+    vector<Node*> ptr2node;    //for non-leaf only
+    vector<MeTPerson*> ptr2val;     //for leaf only
+    Node(bool _leaf = false);
+};
+
+//template<typename MeTPerson*, typename MeTPerson*>
+class BPTree{
+private:
+    Node *root;
+    inline int keyIndex(Node *_node, MeTPerson* _key);
+    inline int eqkeyIndex(Node *_node, MeTPerson* _key);
+    inline pair<Node*, int> keyIndexInLeaf(MeTPerson* _key);
+    inline pair<Node*, int> eqkeyIndexInLeaf(MeTPerson* _key);
+    Node* splitLeaf(Node* _leaf);
+    void createIndex(Node* _new_node, MeTPerson* _index);
+    pair<Node*, MeTPerson*> splitNode(Node* _node);
 
 public:
-	BPlusTree(void);
-	~BPlusTree(void);
-	void linear_print();
+    BPTree();
+    int sz;
+    void insert(MeTPerson* _key);
+    void erase(MeTPerson* _key);
+
+    MeTPerson* find(MeTPerson* _key);
+    void display();
+    void scan();
+    PerDB* PDB;
+    MeTPerson* poptop(int num);
 };
 
 #endif

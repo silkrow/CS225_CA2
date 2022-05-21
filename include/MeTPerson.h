@@ -9,6 +9,8 @@
 #include "FibHeap.h"
 #include "PersonDB.h"
 #include "IntNode.h"
+#include "BPlusTree.h"
+#include "BTree.h"
 
 using namespace std;
 
@@ -39,16 +41,16 @@ class MeTPerson{
     int ageGroup; // current age group
     string nxtUpdate; // YYYY-MM-DD
     int calAge(string s); // calculate one's age group
-    void updAge(string tt, FibHeap* FH);
+    void updAge(string tt);
     int Dif(int year1,int mon1,int day1,int year2,int mon2,int day2); // To calculate difference between dates. 
     string Tostring(int y,int m,int d); // To convert date infomation to string. 
     bool PersonComp(MeTPerson* p1,MeTPerson* p2); // Key comparison rule. 
 
     int profession; // 0~8, the smaller number means higher priority. 
-    void updPro(int newp, FibHeap* FH);
+    void updPro(int newp);
 
     int riskSt; // medical risk status 0- no & low 1-mid 2-high 
-    void updRiskSt(int newr, FibHeap* FH);
+    void updRiskSt(int newr);
     int punishTime; // in weeks, for mid-risk and withdraw
 
     int tmpSt; // 0-In local 1-Centralized 2-Arranged injection 3-withdraw 4-Complete injection
@@ -71,7 +73,7 @@ class MeTPerson{
     int calwaitingtime(string s); // return total waiting time in days
     int watime;
     
-    void withdraw(FibHeap* FH);
+    void withdraw(BPTree* B1, BTree* B2);
     void reRegister();
     
     void printPer(string tt, FILE*);

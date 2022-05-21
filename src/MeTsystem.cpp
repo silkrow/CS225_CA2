@@ -4,6 +4,7 @@
 #include "MeTPerson.h"
 #include "UpAge.h"
 #include "PriLet.h"
+#include "BPlusTree.h"
 
 #include <iostream>
 #include <string>
@@ -65,9 +66,11 @@ MeTsystem::MeTsystem(/*int nOper*/){
 	this->sortby = atoi(s);
 
     //this->PL = new PriLet();
-    this->FH = new FibHeap();
+    //this->FH = new FibHeap();
     this->PL = new PriLet();
     this->UA = new UpAge();
+    this->BPT = new BPTree();
+    this->BT = new BTree();
     printf("Initialization completed. Type 'setup' to start testing.\n");
 }
 
@@ -172,7 +175,7 @@ void MeTsystem::dailyAgeCheck(string tt){
     while(datecmp(tt, UA->top()->nxtUpdate)){
         MeTPerson* tmp = UA->top();
         UA->pop();
-        tmp->updAge(tt, FH);
+        tmp->updAge(tt);
 		if (tmp->ageGroup != 7) 
         	UA->insert(tmp);
 		if (UA->siz == 0) return;
@@ -216,7 +219,9 @@ int MeTsystem::priorityAss(string tt){
         ret++;
         this->assid[ret] = tmpp->pid;
 		tmpp->delmark = 1;
-        FH->delNode(tmpp->Fibnode);
+        //FH->delNode(tmpp->Fibnode);
+        BPT->erase(tmpp);
+        BT->del(tmpp);
 		tmpp->tmpSt = 2;
         tmpp->weekUpdate = 1;
         tmpp->monthUpdate = 1;
@@ -234,8 +239,8 @@ int MeTsystem::commomAss(int t){
     int tot = this->totcap;
     int ret = t;
     /* CALL FIB-QUEUE and find the first(tot-t) ids*/
-    for(int i = t + 1; i <= tot; i++){
-        int tmpid = this->FH->removeM();
+    /*for(int i = t + 1; i <= tot; i++){
+        //int tmpid = this->Fh->removeM();
         if (tmpid == 0) break; // no valid 
 		if (dbPerson[tmpid]->tmpSt == 3) continue;
         this->assid[i] = tmpid;
@@ -243,6 +248,25 @@ int MeTsystem::commomAss(int t){
 		dbPerson[tmpid]->tmpSt = 2;
         dbPerson[tmpid]->weekUpdate = 1;
         dbPerson[tmpid]->monthUpdate = 1;
+    }*/
+    MeTPerson* topperson = this->BPT->poptop(tot - ret);
+    if(NULL == topperson) return ret;
+    if(topperson->tmpSt != 3){
+        ret++;
+        topperson->tmpSt = 2;
+        topperson->weekUpdate = 1;
+        topperson->monthUpdate = 1;
+        this->assid[ret] = topperson->pid;
+    }
+    while(NULL != topperson->lhc){
+        topperson = topperson->lhc;
+        if(topperson->tmpSt != 3){
+        ret++;
+        topperson->tmpSt = 2;
+        topperson->weekUpdate = 1;
+        topperson->monthUpdate = 1;
+        this->assid[ret] = topperson->pid;
+        }
     }
     return ret;
 }

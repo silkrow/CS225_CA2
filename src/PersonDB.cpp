@@ -9,18 +9,17 @@
 using namespace std;
 
 PerDB::PerDB(){
-    topNode=NULL;
-    createBlock();
+    topNode = createBlock();
 }
 
-void PerDB::createBlock(){
-    IntNode* pt;
+IntNode* PerDB::createBlock(){
+    IntNode* pt = new IntNode();
     pt->maincnt=0;
     pt->ofcnt=0;
     pt->tombcnt=0;
     pt->leftNeighbor=pt;
     pt->rightNeighbor=pt;
-    topNode=pt;
+    return pt;
 }
 
 MeTPerson* PerDB::popTopn(int num){
@@ -67,8 +66,7 @@ MeTPerson* PerDB::popTopn(int num){
             }
 
             if (pt->rightNeighbor==pt){
-                topNode=NULL;
-                createBlock();
+                topNode = createBlock();
                 break;
             }
 

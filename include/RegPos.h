@@ -4,6 +4,8 @@
 #include<queue>
 #include "MeTPerson.h"
 #include "FibHeap.h"
+#include "BPlusTree.h"
+#include "BTree.h"
 #include<vector>
 
 
@@ -18,7 +20,7 @@ class RegPos{
     //queue<int> RegPid;
     int cur; // current update pos
     int cnt; // total number of person
-    void forwardInf(FibHeap* FH, MeTPerson** db);
+    void forwardInf(BPTree* B1,BTree* B2, MeTPerson** db);
 };
 
 #endif

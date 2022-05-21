@@ -271,19 +271,19 @@ int MeTPerson::calpriddl(string s){
     return Dif(y2,m2,d2,y1,m1,d1);
 }
 
-void MeTPerson::updAge(string tt, FibHeap* FH){
+void MeTPerson::updAge(string tt){
     this->calAge(tt);
     //FH->updKey(this->Fibnode, this);
 }
 
-void MeTPerson::updPro(int newp, FibHeap* FH){
+void MeTPerson::updPro(int newp){
     this->profession = newp;
-    FH->updKey(this->Fibnode, this);
+    //FH->updKey(this->Fibnode, this);
 }
 
-void MeTPerson::updRiskSt(int newr, FibHeap* FH){
+void MeTPerson::updRiskSt(int newr){
     this->riskSt = newr;
-    FH->updKey(this->Fibnode, this);
+    //FH->updKey(this->Fibnode, this);
 }
 
 void MeTPerson::updTmpSt(int newt){
@@ -340,10 +340,13 @@ bool MeTPerson::cmpBTree(MeTPerson* p){
     return 1;
 }
 
-void MeTPerson::withdraw(FibHeap* FH){
+void MeTPerson::withdraw(BPTree* B1, BTree* B2){
     if(this->tmpSt == 1){ 
         this->delmark = 1;
-        FH->delNode(this->Fibnode);
+        //FH->delNode(this->Fibnode);
+        B1->erase(this);
+        B2->del(this);
+        
     }
    	this->tmpSt = 3;
   	this->weekUpdate = 1;

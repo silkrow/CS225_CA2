@@ -1,405 +1,364 @@
 #include "BPlusTree.h"
-#include "struct.h"
 #include "PersonDB.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <vector>
+#include <queue>
+using namespace std;
 
 
-btree_node* BPlusTree::btree_node_new(){
-    btree_node *node = (btree_node *)malloc(sizeof(btree_node));
-    if(NULL == node) {
-        return NULL;
+
+/*
+*    @brief Find the location of given _key in given _node. 
+*    @param _node: Given node
+*    @param _key: Key we want to locate in _node
+*    @return Index of _key in _node. If _key is not in _node, return the nearest and smaller index
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+inline int BPTree::keyIndex(Node *tmp, MeTPerson* key){
+    int loc = -1;
+    int size = tmp->key.size();
+    /*for(int i = 0; i < size; i++){
+        if(key == tmp->key[i]) return i;
+    }*/
+    //while(tmp->key[loc + 1] <= key){
+    while(key->cmpMeTPer(tmp->key[loc + 1]) == 1){
+        loc++;
+        if(loc == size - 1) break;
     }
-
-    for(int i = 0; i < 2 * M - 1; i++) {
-        node->k[i] = 0;
-    }
-
-    for(int i = 0; i < 2 * M; i++) {
-        node->p[i] = NULL;
-    }
-
-    node->num = 0;
-    node->is_leaf = true;
-	node->prev = NULL;
-	node->next = NULL;
-	return node; 
+    return loc;
 }
 
-btree_node *BPlusTree::btree_create()
-{
-    btree_node *node = btree_node_new();
-    if(NULL == node) {
-        return NULL;
+/*
+*    @brief Find the location of given _key in leaf node. 
+*    @param _key: Key we want to locate.
+*    @return A pair of leaf and index of given _key. If _key not in B+ tree, the index is the nearest and smaller key than given _key.
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+inline pair<Node*, int> BPTree::keyIndexInLeaf(MeTPerson* key){
+    if(root == NULL){
+        return make_pair(NULL, 0);
     }
-
-	node->next = node;
-	node->prev = node;
-
-    return node;
+    Node *node = root;
+    while(true){
+        int loc = keyIndex(node, key);
+        if(node->leaf){
+            return make_pair(node, loc);
+        } else{
+            node = node->ptr2node[loc + 1];
+        }
+    }
 }
 
-int BPlusTree::btree_split_child(btree_node *parent, int pos, btree_node *child)
-{
-    btree_node *new_child = btree_node_new();
-    if(NULL == new_child) {
-        return -1;
+/*
+*    @brief Find the location of given _key in given _node. 
+*    @param _node: Given node
+*    @param _key: Key we want to locate in _node
+*    @return Index of _key in _node. If _key is not in _node, return the nearest and smaller index
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+inline int BPTree::eqkeyIndex(Node *tmp, MeTPerson* key){
+    int size = tmp->key.size();
+    for(int i = 0; i < size; i++){
+        if(key == tmp->key[i]) return i;
     }
-
-    new_child->is_leaf = child->is_leaf;
-    new_child->num = M - 1;
-    
-    for(int i = 0; i < M - 1; i++) {
-        new_child->k[i] = child->k[i+M];
-    }
-
-    if(false == new_child->is_leaf) {
-        for(int i = 0; i < M; i++) {
-            new_child->p[i] = child->p[i+M];
-        }
-    }
-
-    child->num = M - 1;
-	if(true == child->is_leaf) {
-		child->num++;  // if leaf, keep the middle ele, put it in the left
-	}
-
-    for(int i = parent->num; i > pos; i--) {
-        parent->p[i+1] = parent->p[i];
-    }
-    parent->p[pos+1] = new_child;
-
-    for(int i = parent->num - 1; i >= pos; i--) {
-        parent->k[i+1] = parent->k[i];
-    }
-    parent->k[pos] = child->k[M-1];
-    
-    parent->num += 1;
-
-	// update link
-	if(true == child->is_leaf) {
-		new_child->next = child->next;
-		child->next->prev = new_child;
-		new_child->prev = child;
-		child->next = new_child;
-	}
-	return 1;
+    return -1;
 }
 
-void BPlusTree::btree_insert_nonfull(btree_node *node, MeTPerson *target){
-    if(true == node->is_leaf){
-        /*int pos = node->num;
-        while(pos >= 1 && target->cmpMeTPer(node->k[pos - 1]) == 0) {
-            node->k[pos] = node->k[pos-1];
-            pos--;
+/*
+*    @brief Find the location of given _key in leaf node. 
+*    @param _key: Key we want to locate.
+*    @return A pair of leaf and index of given _key. If _key not in B+ tree, the index is the nearest and smaller key than given _key.
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+inline pair<Node*, int> BPTree::eqkeyIndexInLeaf(MeTPerson* key){
+    if(root == NULL){
+        return make_pair(NULL, 0);
+    }
+    Node *node = root;
+    while(true){
+        int loc = keyIndex(node, key);
+        if(node->leaf){
+            return make_pair(node, loc);
+        } else{
+            node = node->ptr2node[loc + 1];
         }
+    }
+}
 
-        node->k[pos] = target;
-        node->num += 1;
-		btree_node_num+=1;*/
-		IntNode* tmp = node->block;
-		tmp->insertB(target); // judge split
-		
-    } else {
-        int pos = node->num;
-        while(pos > 0 && target->cmpMeTPer(node->k[pos - 1]) == 0) {
-            pos--;
+/*
+*    @brief Split leaf node when oversize.
+*    @param _leaf: Leaf we want to split.
+*    @return The new leaf we created after split.
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+Node* BPTree::splitLeaf(Node* _leaf){
+    Node *new_leaf = new Node(LEAF);
+    new_leaf->next = _leaf->next;
+    new_leaf->next->last = new_leaf;
+    _leaf->next = new_leaf;
+    new_leaf->last = _leaf;
+    new_leaf->parent = _leaf->parent;
+    int mid = _leaf->key.size() / 2;
+    for(int i = mid; i < _leaf->key.size();i++){
+        new_leaf->key.push_back(_leaf->key[i]);
+    }
+    //new_leaf->key.assign(_leaf->key.begin() + mid, _leaf->key.end());
+    //new_leaf->ptr2val.assign(_leaf->ptr2val.begin() + mid, _leaf->ptr2val.end());
+    for(int i = mid; i < _leaf->ptr2val.size();i++){
+        new_leaf->ptr2val.push_back(_leaf->ptr2val[i]);
+    }
+    _leaf->key.erase(_leaf->key.begin() + mid, _leaf->key.end());
+    _leaf->ptr2val.erase(_leaf->ptr2val.begin() + mid, _leaf->ptr2val.end());
+    return new_leaf;
+}
+
+/*
+*    @brief Split non-leaf node when oversize.
+*    @param _node: Node we want to split.
+*    @return The new node we created after split.
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+pair<Node*, MeTPerson*> BPTree::splitNode(Node* _node){
+    Node *new_node = new Node();
+    new_node->parent = _node->parent;
+    int mid = (_node->key.size() + 1) / 2 - 1;
+    MeTPerson* push_key = _node->key[mid];
+    for(int i = mid + 1; i < _node->key.size();i++){
+        new_node->key.push_back(_node->key[i]);
+    }
+    //new_node->key.assign(_node->key.begin() + mid + 1, _node->key.end());
+    //new_node->ptr2node.assign(_node->ptr2node.begin() + mid + 1, _node->ptr2node.end());
+    for(int i = mid + 1; i < _node->key.size();i++){
+        new_node->ptr2node.push_back(_node->ptr2node[i]);
+    }
+    _node->key.erase(_node->key.begin() + mid, _node->key.end());
+    _node->ptr2node.erase(_node->ptr2node.begin() + mid + 1, _node->ptr2node.end());
+    //for(Node* each : new_node->ptr2node)
+    //    each->parent = new_node;
+    for(int i = 0; i < new_node->ptr2node.size(); i++)
+        new_node->ptr2node[i]->parent = new_node;
+    return make_pair(new_node, push_key);
+}
+
+/*
+*    @brief Create index for given _new_node using _index as index. The index will be inserted to _new_node's parent.
+*    @param _new_node: Node we want to create index for.
+*    @param _index: Index of our new node. For leaf node, it should be the first key.
+*    @return void
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+void BPTree::createIndex(Node* _new_node, MeTPerson* _index){
+    Node *node = _new_node->parent;
+    int loc = keyIndex(node, _index);
+    node->key.insert(node->key.begin() + loc + 1, _index);
+    node->ptr2node.insert(node->ptr2node.begin() + loc + 2, _new_node);
+    if(node->key.size() > order){
+        pair<Node*, MeTPerson*> pair = splitNode(node);
+        Node *new_node = pair.first;
+        MeTPerson* push_key = pair.second;
+        if(node == root){
+            Node *new_root = new Node();
+            new_root->key.push_back(push_key);
+            new_root->ptr2node.push_back(node);
+            new_root->ptr2node.push_back(new_node);
+            root = new_root;
+            node->parent = root;
+            new_node->parent = root;
+        } else{
+            createIndex(new_node, push_key);
         }
+    }
+}
 
-        if(2 * M -1 == node->p[pos]->num) {
-            btree_split_child(node, pos, node->p[pos]);
-            if(1 == target->cmpMeTPer(node->k[pos])){
-                pos++;
+Node::Node(bool _leaf) : leaf(_leaf), parent(nullptr), next(nullptr), last(nullptr) {}
+
+BPTree::BPTree() : root(nullptr), sz(0) {}
+
+/*
+*    @brief Insert (key, value) to B+ tree
+*    @param _key: Key we want to insert
+*    @param _val: Value we want to insert
+*    @return void
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+void BPTree::insert(MeTPerson* _key){
+    if(root == nullptr){
+        root = new Node(LEAF);
+        root->key.push_back(_key);
+        root->ptr2val.push_back(_key);
+        //root->ptr2val.emplace_back(new MeTPerson*(_val));
+        root->ptr2node.push_back(nullptr);
+        /*for DB*/
+        PDB = new PerDB();
+        PDB->insertPer(_key, PDB->topNode);
+        sz++;
+        return;
+    }
+    pair<Node*, int> pair = keyIndexInLeaf(_key);
+    Node *leaf = pair.first;
+    int loc = pair.second;
+    if(loc != -1 && leaf->key[loc] == _key){
+        //cout << "Key " << _key << " with value " << *(leaf->ptr2val[loc]) << " is already in B+ tree, overwrite it with new val " << _val << endl;
+        //*(leaf->ptr2val[loc]) = _key;
+        return;
+    }
+    sz++;
+    leaf->key.insert(leaf->key.begin() + loc + 1, _key);
+    leaf->ptr2val.insert(leaf->ptr2val.begin() + loc + 1, _key);
+
+    // for DB
+    // !! tree cannot be empty
+    // which means at least one node else in the leafs
+    if(-1 != loc){
+        PDB->insertPer(_key, leaf->key[loc]->dbblock);
+    }
+    else{
+        int endk = leaf->key.size();
+        if(loc != endk - 2){
+            PDB->insertPer(_key, leaf->key[loc + 2]->dbblock);
+        }
+        else if(NULL != leaf->next){
+            Node* llf = leaf->next;
+            bool flag = 1;
+            while(llf->key.size() == 0){
+                if(NULL == llf->next){
+                    flag = 0;
+                    break;
+                }
+                llf = llf->next;
+            }
+            if(flag) PDB->insertPer(_key, llf->key[0]->dbblock);
+        }
+        else{
+            Node* llf = leaf->last;
+            bool flag = 1;
+            while(llf->key.size() == 0){
+                if(NULL == llf->last){
+                    flag = 0;
+                    break;
+                }
+                llf = llf->last;
+            }
+            if(flag){
+                int ll =  leaf->last->key.size() - 1;
+                PDB->insertPer(_key, leaf->last->key[ll]->dbblock);
             }
         }
-        
-        btree_insert_nonfull(node->p[pos], target);
+    }
+    
+    if(leaf->key.size() > order){
+        Node *new_leaf = splitLeaf(leaf);
+        if(leaf == root){
+            Node *new_root = new Node();
+            new_root->key.push_back(new_leaf->key[0]);
+            new_root->ptr2node.push_back(leaf);
+            new_root->ptr2node.push_back(new_leaf);
+            root = new_root;
+            leaf->parent = root;
+            new_leaf->parent = root;
+        } else{
+            createIndex(new_leaf, new_leaf->key[0]);
+        }
     }
 }
 
-btree_node* BPlusTree::btree_insert(btree_node *root, MeTPerson *target){
-    if(NULL == root) {
-        return NULL;
+/*
+*    @brief Delete _key from B+ tree
+*    @param _key: Key we want to delete
+*    @return void
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+void BPTree::erase(MeTPerson* _key){
+    pair<Node*, int> pair = keyIndexInLeaf(_key);
+    Node *leaf = pair.first;
+    int loc = pair.second;
+    if(loc == -1){
+        printf("no such key in btree\n");
+        return;
     }
+    sz--;
+    PDB->deletePer(_key, _key->dbblock);
+    for(int i = loc; i < leaf->key.size() - 1; i++){
+        leaf->key[i] = leaf->key[i + 1];
+        leaf->ptr2val[i] = leaf->ptr2val[i + 1];
+    }
+    return;
+}
 
-    if(2 * M - 1 == root->num) {
-        btree_node *node = btree_node_new();
-        if(NULL == node) {
-            return root;
-        }
-        
-        node->is_leaf = false;
-        node->p[0] = root;
-        btree_split_child(node, 0, root);
-        btree_insert_nonfull(node, target);
-        return node;
+/*
+*    @brief Find the value ptr of given key in B+ tree
+*    @param _key: Key we want to find
+*    @return A ptr to value. If key is not in B+ tree then return nullptr
+*/
+//template<typename MeTPerson*, typename MeTPerson*>
+MeTPerson* BPTree::find(MeTPerson* _key){
+    pair<Node*, int> pair = keyIndexInLeaf(_key);
+    Node *leaf = pair.first;
+    int loc = pair.second;
+    if(loc == -1 || leaf->key[loc] != _key){
+        //std::cout << "Key " << _key << " is not in B+ tree" << std::endl;
+        return nullptr;
     } else{
-        btree_insert_nonfull(root, target);    
-        return root;
+        return leaf->ptr2val[loc];
     }
 }
 
-void BPlusTree::btree_merge_child(btree_node *root, int pos, btree_node *y, btree_node *z){
-	if(true == y->is_leaf) {
-		y->num = 2 * M - 2;
-		for(int i = M; i < 2 * M - 1; i++) {
-			y->k[i-1] = z->k[i-M];
-		}
-	} else {
-		y->num = 2 * M - 1;
-		for(int i = M; i < 2 * M - 1; i++) {
-			y->k[i] = z->k[i-M];
-		}
-		y->k[M-1] = root->k[pos];
-		for(int i = M; i < 2 * M; i++) {
-			y->p[i] = z->p[i-M];
-		}
-	}
-
-	for(int j = pos + 1; j < root->num; j++) {
-		root->k[j-1] = root->k[j];
-		root->p[j] = root->p[j+1];
-	}
-
-	root->num -= 1;
-
-	// update link
-	if(true == y->is_leaf) {
-		y->next = z->next;
-		z->next->prev = y;
-	}
-
-	free(z);
+MeTPerson* BPTree::poptop(int num){
+    return this->PDB->popTopn(num);
 }
 
-btree_node *BPlusTree::btree_delete(btree_node *root, MeTPerson *target){
-	if(1 == root->num) {
-		btree_node *y = root->p[0];
-		btree_node *z = root->p[1];
-		if(NULL != y && NULL != z && M - 1 == y->num && M - 1 == z->num) {
-			btree_merge_child(root, 0, y, z);
-			free(root);
-			btree_delete_nonone(y, target);
-			return y;
-		} else {
-			btree_delete_nonone(root, target);
-			return root;
-		}
-	} else {
-		btree_delete_nonone(root, target);	
-		return root;
-	}
-}
 
-void BPlusTree::btree_delete_nonone(btree_node *root, MeTPerson *target){
-	if(true == root->is_leaf){
-		int i = 0;
-		while(i < root->num && target->cmpMeTPer(root->k[i])) i++;
-		if(target == root->k[i]){
-			for(int j = i + 1; j < 2 * M - 1; j++) {
-				root->k[j-1] = root->k[j];
-			}
-			root->num -= 1;
-			btree_node_num-=1;
-			
-		} else {
-			printf("target not found\n");
-		}
-	} else {
-		int i = 0;
-		btree_node *y = NULL, *z = NULL;
-		while(i < root->num && target->cmpMeTPer(root->k[i])) i++;
-		
-		y = root->p[i];
-		if(i < root->num) {
-			z = root->p[i+1];
-		}
-		btree_node *p = NULL;
-		if(i > 0) {
-			p = root->p[i-1];
-		}
-
-		if(y->num == M - 1) {
-			if(i > 0 && p->num > M - 1) {
-				btree_shift_to_right_child(root, i-1, p, y);
-			} else if(i < root->num && z->num > M - 1) {
-				btree_shift_to_left_child(root, i, y, z);
-			} else if(i > 0) {
-				btree_merge_child(root, i-1, p, y);
-				y = p;
-			} else {
-				btree_merge_child(root, i, y, z);
-			}
-			btree_delete_nonone(y, target);
-		} else {
-			btree_delete_nonone(y, target);
-		}
-	}
-}
-
-MeTPerson * BPlusTree::btree_search_predecessor(btree_node *root){
-	btree_node *y = root;
-	while(false == y->is_leaf) {
-		y = y->p[y->num];
-	}
-	return y->k[y->num-1];
-}
-
-MeTPerson *BPlusTree::btree_search_successor(btree_node *root) {
-	btree_node *z = root;
-	while(false == z->is_leaf) {
-		z = z->p[0];
-	}
-	return z->k[0];
-}
-
-void BPlusTree::btree_shift_to_right_child(btree_node *root, int pos, 
-		btree_node *y, btree_node *z)
-{
-	z->num += 1;
-
-	if(false == z->is_leaf) {
-		z->k[0] = root->k[pos];
-		root->k[pos] = y->k[y->num-1];
-	} else {
-		z->k[0] = y->k[y->num-1];
-		root->k[pos] = y->k[y->num-2];
-	}
-
-	for(int i = z->num -1; i > 0; i--) {
-		z->k[i] = z->k[i-1];
-	}
-
-	if(false == z->is_leaf) {
-		for(int i = z->num; i > 0; i--) {
-			z->p[i] = z->p[i-1];
-		}
-		z->p[0] = y->p[y->num];
-	} 
-
-	y->num -= 1;
-}
-
-void BPlusTree::btree_shift_to_left_child(btree_node *root, int pos,
-		btree_node *y, btree_node *z)
-{
-	y->num += 1;
-
-	if(false == z->is_leaf) {
-		y->k[y->num-1] = root->k[pos];
-		root->k[pos] = z->k[0];
-	} else {
-		y->k[y->num-1] = z->k[0];
-		root->k[pos] = z->k[0];
-	}
-
-	for(int j = 1; j < z->num; j++) {
-		z->k[j-1] = z->k[j];
-	}
-
-	if(false == z->is_leaf) {
-		y->p[y->num] = z->p[0];
-		for(int j = 1; j <= z->num; j++) {
-			z->p[j-1] = z->p[j];
-		}
-	} 
-
-	z->num -= 1;
-}
-
-void BPlusTree::btree_inorder_print(btree_node *root) 
-{
-    if(NULL != root) {
-        btree_inorder_print(root->p[0]);
-        for(int i = 0; i < root->num; i++) {
-            printf("%d ", root->k[i]);
-          // 	fwrite(&root,sizeof(root),1,fp);
-            btree_inorder_print(root->p[i+1]);
+//template<typename MeTPerson*, typename MeTPerson*>
+void BPTree::display(){
+    if(root == nullptr){
+        cout << "B+ tree is empty!" << endl;
+        return;
+    }
+    queue<Node*> q;
+    q.push(root);
+    while(!q.empty()){
+        int q_size = q.size();
+        while(q_size--){
+            Node *node = q.front();
+            q.pop();
+            int key_size = node->key.size();
+            if(node->leaf){
+               // for(auto each : node->ptr2val)
+               //    cout << *each << " ";
+               for(int i = 0; i < key_size; i++){
+                   printf("%d ",node->ptr2val[i]->pid);
+               }
+            } else{
+                /*for(auto each : node->key)
+                  cout << each << " ";
+                for(auto each : node->ptr2node)
+                    q.push(each);*/
+                for(int i = 0; i < key_size; i++){
+                    printf("%d ",node->key[i]->pid);
+                    q.push(node->ptr2node[i]);
+                }
+            }
+            cout << "| ";
         }
+        cout << endl;
     }
 }
 
-void BPlusTree::btree_linear_print(btree_node *root) 
-{
-	if(NULL != root) {
-		btree_node *leftmost = root;
-		while(false == leftmost->is_leaf) {
-			leftmost = leftmost->p[0];
-		}
-		
-		btree_node *iter = leftmost;
-		do {
-			for(int i = 0; i < iter->num; i++) {
-            	printf("%d ", iter->k[i]);
-            //	fwrite(&root,sizeof(root),1,fp);
-			}
-			iter = iter->next;
-        } while(iter != leftmost);
-		printf("\n");
-	}
+//template<typename MeTPerson*, typename MeTPerson*>
+/*void BPTree::scan(){
+    if(root == nullptr){
+        cout << "B+ tree is empty!" << endl;
+        return;
+    }
+    Node *node = root;
+    while(!node->leaf){
+        node = node->ptr2node[0];
+    }
+    while(node != nullptr){
+        for(auto each : node->ptr2val)
+            cout << *each << " ";
+        node = node->next;
+    }
+    cout << endl;
 }
-
-void BPlusTree::Save(btree_node *root) 
-{
-//	fwrite(root,sizeof(root),1,pfile);
-}
-
-void BPlusTree::btree_level_display(btree_node *root) 
-{
-	// just for simplicty, can't exceed 200 nodes in the tree
-	btree_node *queue[200] = {NULL};
-	int front = 0;
-	int rear = 0;
-
-	queue[rear++] = root;
-
-	while(front < rear) {
-		btree_node *node = queue[front++];
-
-		printf("[");
-		for(int i = 0; i < node->num; i++) {
-			printf("%d ", node->k[i]);
-		}
-		printf("]");
-
-		for(int i = 0; i <= node->num; i++) {
-			if(NULL != node->p[i]) {
-				queue[rear++] = node->p[i];               
-			}
-		}
-	}
-	printf("\n");
-}
-
-void BPlusTree::linear_print()
-{
-	btree_linear_print(roots);
-}
-
-BPlusTree::BPlusTree(void)
-{
-	// ���ж��ļ��Ƿ����
- 	// windows�£���io.h�ļ���linux���� unistd.h�ļ� 
-  	// int access(const char *pathname, int mode);
-   	//if(-1==access("define.Bdb",F_OK))
-    //{
-	   	// ������ ,���� 
-//	   	pfile = fopen("bplus.bp","w");
-   	roots = btree_create();
-	//}
- 	//else
-  	//{
-//	   	pfile = fopen("bplus.bp","r+");
-	//   	roots = btree_create();
-//	   	fread(roots,sizeof(roots),1,pfile);
-   //	}
-}
-
-BPlusTree::~BPlusTree(void)
-{
-	
-}
-
-MeTPerson* BPlusTree::popnPer(int num, PerDB* db){
-	return db->popTopn(num);
-}
+*/
