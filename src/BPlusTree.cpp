@@ -38,7 +38,8 @@ inline int BPTree::keyIndex(Node *tmp, MeTPerson* key){
 //template<typename MeTPerson*, typename MeTPerson*>
 inline pair<Node*, int> BPTree::keyIndexInLeaf(MeTPerson* key){
     if(root == NULL){
-        return make_pair(NULL, 0);
+        Node* ret = NULL;
+        return make_pair(ret, 0);
     }
     Node *node = root;
     while(true){
@@ -74,7 +75,8 @@ inline int BPTree::eqkeyIndex(Node *tmp, MeTPerson* key){
 //template<typename MeTPerson*, typename MeTPerson*>
 inline pair<Node*, int> BPTree::eqkeyIndexInLeaf(MeTPerson* key){
     if(root == NULL){
-        return make_pair(NULL, 0);
+        Node* ret = NULL;
+        return make_pair(ret, 0);
     }
     Node *node = root;
     while(true){
