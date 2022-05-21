@@ -141,7 +141,7 @@ void IntNode::mergeB(){
         this->tombcnt=0;
         this->ofcnt=0;
         for (int i=0;i<p;i++)
-            this->mainB[i]=a[i];
+            this->mainB[i]=a[i],a[i]->dbblock=this;
         return;
     }
 
@@ -154,9 +154,9 @@ void IntNode::mergeB(){
     this->tombcnt=0;
 
     for (int i=0;i<(p+1)/2;i++)
-        this->mainB[i]=a[i];
+        this->mainB[i]=a[i],a[i]->dbblock=this;
     for (int i=0;i<p/2;i++)
-        pt->mainB[i]=a[(p+1)/2+i];
+        pt->mainB[i]=a[(p+1)/2+i],pt->mainB[i]->dbblock=pt;
 }
 void IntNode::splitB(){
     MeTPerson* a[20];
@@ -190,9 +190,9 @@ void IntNode::splitB(){
     this->tombcnt=0;
 
     for (int i=0;i<(p+1)/2;i++)
-        this->mainB[i]=a[i];
+        this->mainB[i]=a[i],a[i]->dbblock=this;
     for (int i=0;i<p/2;i++)
-        pt_r->mainB[i]=a[(p+1)/2+i];
+        pt_r->mainB[i]=a[(p+1)/2+i],pt_r->mainB[i]->dbblock=pt_r;
     
     IntNode* pt_next;
     pt_next=this->rightNeighbor;
