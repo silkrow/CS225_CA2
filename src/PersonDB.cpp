@@ -36,17 +36,19 @@ MeTPerson* PerDB::popTopn(int num){
         if (pt==topNode)
             f1=1;
         if (pt->Num()<=num){
+            num-=pt->Num();
+
             int p1=0,p2=0;
+            pt->Adjustof();
             while (p1<pt->maincnt||p2<pt->ofcnt){
-                pt->Adjustof();
                 while (p1<pt->maincnt&&pt->mainB[p1]->tombmark)
-                    p1++;
+                    pt->mainB[p1++]->tombmark=0;
                 if (p1==pt->maincnt){
                     cur->lhc=pt->ofB[p2++];
                     cur=cur->lhc;
                     continue;
                 }
-                if (p2==pt->maincnt){
+                if (p2==pt->ofcnt){
                     cur->lhc=pt->mainB[p1++];
                     cur=cur->lhc;
                     continue;
@@ -62,7 +64,6 @@ MeTPerson* PerDB::popTopn(int num){
                     continue;                  
                 }
             }
-            num-=pt->Num();
 
             if (pt->rightNeighbor==pt){
                 topNode=NULL;
@@ -79,9 +80,11 @@ MeTPerson* PerDB::popTopn(int num){
         }
         else{
             while (num){
-                cur->lhc=pt->topPer();
+                if (cur!=NULL)
+                    cur->lhc=pt->topPer();
                 cur=cur->lhc;
-                pt->deleteB(cur);
+                if (cur)
+                    pt->deleteB(cur);
                 num--;
             }
         }
