@@ -23,7 +23,7 @@ inline int BPTree::keyIndex(Node *tmp, MeTPerson* key){
         if(key == tmp->key[i]) return i;
     }*/
     //while(tmp->key[loc + 1] <= key){
-    while(key->cmpMeTPer(tmp->key[loc + 1]) == 1){ printf("line26\n");
+    while(key->cmpMeTPer(tmp->key[loc + 1]) == 1){ 
         loc++;
         if(loc == size - 1) break;
     }
@@ -42,11 +42,11 @@ inline pair<Node*, int> BPTree::keyIndexInLeaf(MeTPerson* key){
         return make_pair(ret, 0);
     }
     Node *node = root;
-    while(true){ printf("jiumingline45\n");
+    while(true){ 
         int loc = keyIndex(node, key);
-        if(node->leaf){
+        if(node->leaf){ 
             return make_pair(node, loc);
-        } else{
+        } else{ 
             node = node->ptr2node[loc + 1];
         }
     }
@@ -79,7 +79,7 @@ inline pair<Node*, int> BPTree::eqkeyIndexInLeaf(MeTPerson* key){
         return make_pair(ret, 0);
     }
     Node *node = root;
-    while(true){ printf("line82\n");
+    while(true){ 
         int loc = keyIndex(node, key);
         if(node->leaf){
             return make_pair(node, loc);
@@ -98,7 +98,8 @@ inline pair<Node*, int> BPTree::eqkeyIndexInLeaf(MeTPerson* key){
 Node* BPTree::splitLeaf(Node* _leaf){
     Node *new_leaf = new Node(LEAF);
     new_leaf->next = _leaf->next;
-    new_leaf->next->last = new_leaf;
+
+    if (new_leaf->next != NULL) new_leaf->next->last = new_leaf;
     _leaf->next = new_leaf;
     new_leaf->last = _leaf;
     new_leaf->parent = _leaf->parent;
@@ -132,7 +133,7 @@ pair<Node*, MeTPerson*> BPTree::splitNode(Node* _node){
     }
     //new_node->key.assign(_node->key.begin() + mid + 1, _node->key.end());
     //new_node->ptr2node.assign(_node->ptr2node.begin() + mid + 1, _node->ptr2node.end());
-    for(int i = mid + 1; i < _node->key.size();i++){
+    for(int i = mid + 1; i < _node->ptr2node.size();i++){
         new_node->ptr2node.push_back(_node->ptr2node[i]);
     }
     _node->key.erase(_node->key.begin() + mid, _node->key.end());
@@ -185,55 +186,48 @@ BPTree::BPTree() : root(nullptr), sz(0) {}
 *    @return void
 */
 //template<typename MeTPerson*, typename MeTPerson*>
-void BPTree::insert(MeTPerson* _key){ printf("BPTree insert\n");
-    if(root == nullptr){
-        //printf("hello\n");
+void BPTree::insert(MeTPerson* _key){ 
+    if(root == nullptr){ 
         root = new Node(LEAF);
         root->key.push_back(_key);
         root->ptr2val.push_back(_key);
         //root->ptr2val.emplace_back(new MeTPerson*(_val));
         root->ptr2node.push_back(nullptr);
-        /*for DB*/ printf("BPTree 195\n");
+        /*for DB*/ 
         PDB = new PerDB();
-        //PDB->insertPer(_key, PDB->topNode); printf("BPTree 197\n");
+        //PDB->insertPer(_key, PDB->topNode); 
         PDB->topNode->insertB(_key);
         sz++;
         return;
     }
     pair<Node*, int> pair = keyIndexInLeaf(_key);
-    printf("hello1\n");
     Node *leaf = pair.first;
     int loc = pair.second;
-    printf("hello2\n");
     if(loc != -1 && leaf->key[loc] == _key){
         //cout << "Key " << _key << " with value " << *(leaf->ptr2val[loc]) << " is already in B+ tree, overwrite it with new val " << _val << endl;
         //*(leaf->ptr2val[loc]) = _key;
-       printf("hello3\n");
         return;
     }
     sz++;
-    leaf->key.insert(leaf->key.begin() + loc + 1, _key);
-    leaf->ptr2val.insert(leaf->ptr2val.begin() + loc + 1, _key);
-    printf("hello4\n");
-	printf("line212 %d\n", loc);
+    leaf->key.insert(leaf->key.begin() + loc + 1, _key);     leaf->ptr2val.insert(leaf->ptr2val.begin() + loc + 1, _key);
     // for DB
     // !! tree cannot be empty
     // which means at least one node else in the leafs 
-    if(-1 != loc){ printf("line216\n");
+    if(-1 != loc){
         //PDB->insertPer(_key, leaf->key[loc]->dbblock);
         leaf->key[loc]->dbblock->insertB(_key);
     }
-    else{ printf("line219\n");
+    else{ 
         int endk = leaf->key.size();
-        if(loc != endk - 2){ printf("line221\n"); printf("%ld\n", leaf->key.size());
-            //PDB->insertPer(_key, leaf->key[loc + 2]->dbblock); printf("line222 insert finish\n");
+        if(loc != endk - 2){ 
+            //PDB->insertPer(_key, leaf->key[loc + 2]->dbblock); 
             leaf->key[loc + 2]->dbblock->insertB(_key); 
             //PDB->topNode->insertB(_key);
         }
-        else if(NULL != leaf->next){ printf("line224\n");
+        else if(NULL != leaf->next){ 
             Node* llf = leaf->next;
             bool flag = 1;
-            while(llf->key.size() == 0){ printf("line227\n");
+            while(llf->key.size() == 0){ 
                 if(NULL == llf->next){
                     flag = 0;
                     break;
@@ -243,40 +237,37 @@ void BPTree::insert(MeTPerson* _key){ printf("BPTree insert\n");
             //if(flag) PDB->insertPer(_key, llf->key[0]->dbblock);
             if(flag) llf->key[0]->dbblock->insertB(_key);
         }
-        else{ printf("line236\n");
+        else{ 
             Node* llf = leaf->last;
             bool flag = 1;
-            while(llf->key.size() == 0){ printf("line239\n");
+            while(llf->key.size() == 0){ 
                 if(NULL == llf->last){
                     flag = 0;
                     break;
                 }
                 llf = llf->last;
             }
-            if(flag){ printf("line246\n");
+            if(flag){ 
                 int ll =  leaf->last->key.size() - 1;
                 //PDB->insertPer(_key, leaf->last->key[ll]->dbblock);
                 leaf->last->key[ll]->dbblock->insertB(_key);
             }
         }
-    }
-
-    printf("md\n");
-    
-    if(leaf->key.size() > order){
-        Node *new_leaf = splitLeaf(leaf);
+    } 
+    if(leaf->key.size() > order){   
+        Node *new_leaf = splitLeaf(leaf); 
         if(leaf == root){
             Node *new_root = new Node();
-            new_root->key.push_back(new_leaf->key[0]);
+            new_root->key.push_back(new_leaf->key[0]); 
             new_root->ptr2node.push_back(leaf);
             new_root->ptr2node.push_back(new_leaf);
             root = new_root;
             leaf->parent = root;
             new_leaf->parent = root;
-        } else{
+        } else{  
             createIndex(new_leaf, new_leaf->key[0]);
         }
-    }
+    } 
 }
 
 /*
@@ -333,7 +324,9 @@ void BPTree::display(){
     }
     queue<Node*> q;
     q.push(root);
+	int layer = 0;
     while(!q.empty()){
+		cout << "layer " << layer++ <<endl;
         int q_size = q.size();
         while(q_size--){
             Node *node = q.front();
@@ -342,7 +335,7 @@ void BPTree::display(){
             if(node->leaf){
                // for(auto each : node->ptr2val)
                //    cout << *each << " ";
-               for(int i = 0; i < key_size; i++){
+               for(int i = 0; i < node->ptr2val.size(); i++){
                    printf("%d ",node->ptr2val[i]->pid);
                }
             } else{
@@ -351,7 +344,8 @@ void BPTree::display(){
                 for(auto each : node->ptr2node)
                     q.push(each);*/
                 for(int i = 0; i < key_size; i++){
-                    printf("%d ",node->key[i]->pid);
+                    printf("%d ",node->key[i]->pid);}
+				for(int i = 0; i < node->ptr2node.size();i++){
                     q.push(node->ptr2node[i]);
                 }
             }

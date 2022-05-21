@@ -27,10 +27,9 @@ void RegPos::forwardInf(BPTree* B1, BTree* B2, MeTPerson** db){//Upload informat
 		if (db[locList[i]]->tmpSt == 3) continue;
         //NodePerson* newp = FH->insert(db[locList[i]]);
         //db[locList[i]]->Fibnode = newp;
-        printf("inb1\n");
         B1->insert(db[locList[i]]);
        // printf("inb2\n");
-        //B2->insert(db[locList[i]]);
+        B2->insert(db[locList[i]]);
       //  printf("inb222\n");
         db[locList[i]]->tmpSt = 1;
     }

@@ -1,0 +1,10 @@
+Monthly Report
+2023-02-01-00-00-00
+Number of registered people in total: 25600
+Number of treatment appointment in total: 1
+Number of treatment appointment new this month: 0
+Number of waiting in total: 25598
+Number of waiting new this month: 3100
+Number of withdraw in total: 1
+Number of withdraw new this month: 0
+Average waiting time: 128.49 days

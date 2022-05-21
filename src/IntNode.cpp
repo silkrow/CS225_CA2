@@ -24,7 +24,7 @@ void IntNode::Adjustof(){
     for (int i=0;i<ofcnt;i++)
         for (int j=i;j<ofcnt-1;j++)
             if (ofB[j]->cmpMeTPer(ofB[j+1])){
-                MeTPerson* tmp;
+                MeTPerson* tmp = new MeTPerson();
                 tmp=ofB[j];
                 ofB[j]=ofB[j+1];
                 ofB[j+1]=tmp;
@@ -37,19 +37,12 @@ int IntNode::Num(){
 }
 
 void IntNode::insertB(MeTPerson* tmp){
-    printf("jiuming1\n");
-    printf("jiuming1121\n");
-    printf("jiuming1121\n");
     //cout<<ofcnt<<endl;
-    ofcnt = 0;
-    printf("jiuming1121\n");
-    printf("jiuming1121\n");
-    
-    //printf("ofcnt = %d\n", this->ofcnt);printf("jiuming1121\n");
+    //ofcnt = 0;
     tmp->dbblock = this;
     if (this->ofcnt < 3){
     //    printf("fengzi\n");
-        ofB[ofcnt++]=tmp; printf("line45\n"); 
+        ofB[ofcnt++]=tmp;
         return;
     }
     this->sortB();
@@ -216,7 +209,6 @@ void IntNode::splitB(){
 }
 
 void IntNode::sortB(){
-    printf("qwq\n");
     if (maincnt+ofcnt>maincap){
         this->splitB();
         return;

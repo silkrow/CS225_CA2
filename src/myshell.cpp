@@ -283,10 +283,6 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 	}
 
 	/* Added for CA2. */
-	if (strcmp(args[0], "tree") == 0 && args[1] == NULL){
-		/* Print the trees. */
-		return 1;
-	}
 
 	if (strcmp(args[0], "search") == 0 && args[1] == NULL){
 		/* Ask for the choice, support searching by three different keywords. */
@@ -355,13 +351,13 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 		}
 		return 1;
 	}
-	if((strcmp(args[0], "Fibonacci") == 0 || strcmp(args[0], "F") == 0) && args[1] == NULL){
+	if((strcmp(args[0], "BPT") == 0) && args[1] == NULL){
 		if (mySys->BPT->sz == 0){
-			printf("Null Fibonacci Heap\n");
+			printf("Null BPlusTree\n");
 			return 1;
 		}
 		else {
-			printf("Fibonacci of pid:\n");
+			printf("BPlusTree of pid:\n");
 			//mySys->FH->printFib();
 			mySys->BPT->display();
 			return 1;
