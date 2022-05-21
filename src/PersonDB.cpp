@@ -10,6 +10,7 @@ using namespace std;
 
 PerDB::PerDB(){
     topNode=NULL;
+    createBlock();
 }
 
 void PerDB::createBlock(){
