@@ -18,16 +18,5 @@ typedef struct btree_nodes{
 	
 } btree_node;
 
-// !!
-typedef struct StorageNode{
-	btree_node bnode;
-	int index[M];   // index_set 
-}storage_node;
-
-// !!
-typedef struct StorageStruct{
-	storage_node *snode;
-	int len;
-}storage_struct;
 
 #endif
