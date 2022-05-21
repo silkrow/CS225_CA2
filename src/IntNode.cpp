@@ -10,9 +10,9 @@
 using namespace std;
 
 IntNode::IntNode(){
-    maincnt=0;
-    ofcnt=0;
-    tombcnt=0;
+    this->maincnt=0;
+    this->ofcnt=0;
+    this->tombcnt=0;
 
 	for (int i = 0; i < 13; i++)
 		mainB[i] = new MeTPerson();
@@ -23,11 +23,11 @@ IntNode::IntNode(){
 void IntNode::Adjustof(){
     for (int i=0;i<ofcnt;i++)
         for (int j=i;j<ofcnt-1;j++)
-            if (ofB[i]->cmpMeTPer(ofB[j])){
+            if (ofB[j]->cmpMeTPer(ofB[j+1])){
                 MeTPerson* tmp;
-                tmp=ofB[i];
-                ofB[i]=ofB[j];
-                ofB[j]=tmp;
+                tmp=ofB[j];
+                ofB[j]=ofB[j+1];
+                ofB[j+1]=tmp;
             }
 
 }
@@ -37,7 +37,18 @@ int IntNode::Num(){
 }
 
 void IntNode::insertB(MeTPerson* tmp){
-    if (ofcnt<ofcap){
+    printf("jiuming1\n");
+    printf("jiuming1121\n");
+    printf("jiuming1121\n");
+    //cout<<ofcnt<<endl;
+    ofcnt = 0;
+    printf("jiuming1121\n");
+    printf("jiuming1121\n");
+    
+    //printf("ofcnt = %d\n", this->ofcnt);printf("jiuming1121\n");
+    tmp->dbblock = this;
+    if (this->ofcnt < 3){
+    //    printf("fengzi\n");
         ofB[ofcnt++]=tmp; printf("line45\n"); 
         return;
     }
@@ -82,6 +93,7 @@ void IntNode::deleteB(MeTPerson* tmp){
     }
     if (Num()<maincap/mergefactor)
         mergeB();
+    tmp->dbblock = NULL;
 }
 
 MeTPerson* IntNode::topPer(){
@@ -112,6 +124,9 @@ void IntNode::mergeB(){
     pt->sortB();
     
     MeTPerson* a[23];
+    for(int i = 0; i < 23; i++){
+        a[i] = new MeTPerson();
+    }
     int p1=0,p2=0,p=0;
 
     while (p1<this->maincnt||p2<pt->maincnt){
@@ -201,6 +216,7 @@ void IntNode::splitB(){
 }
 
 void IntNode::sortB(){
+    printf("qwq\n");
     if (maincnt+ofcnt>maincap){
         this->splitB();
         return;

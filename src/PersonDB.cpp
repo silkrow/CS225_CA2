@@ -94,7 +94,8 @@ MeTPerson* PerDB::popTopn(int num){
 
  
 void PerDB::insertPer(MeTPerson* tmp, IntNode* block){ printf("line96\n");
-    block->insertB(tmp);
+    //block->insertB(tmp);
+    printf("line98\n");
 }
 void PerDB::deletePer(MeTPerson* tmp, IntNode* block){
     block->deleteB(tmp);
