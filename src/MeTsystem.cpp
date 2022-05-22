@@ -258,7 +258,7 @@ int MeTsystem::commomAss(int t){
         topperson->monthUpdate = 1;
         this->assid[ret] = topperson->pid;
     }
-    while(NULL != topperson->lhc){
+    while(NULL != topperson->lhc && topperson->lhc != topperson){
         topperson = topperson->lhc;
         if(topperson->tmpSt != 3){
         ret++;
