@@ -25,10 +25,10 @@ IntNode* PerDB::createBlock(){
 
 MeTPerson* PerDB::popTopn(int num){
     IntNode* pt=topNode;
-    MeTPerson* Guard;
-    Guard->lhc=NULL;
-    MeTPerson* cur;
-    cur=Guard;
+    MeTPerson* Head=new MeTPerson();
+    MeTPerson* Tail=new MeTPerson();
+    Head=NULL;
+    Tail=NULL;
     bool f1=0;
 
     while (num){
@@ -45,23 +45,47 @@ MeTPerson* PerDB::popTopn(int num){
                 while (p1<pt->maincnt&&pt->mainB[p1]->tombmark)
                     pt->mainB[p1++]->tombmark=0;
                 if (p1==pt->maincnt){
-                    cur->lhc=pt->ofB[p2++];
-                    cur=cur->lhc;
+                    if (Head=NULL){
+                        Head=pt->ofB[p2++];
+                        Tail=pt->ofB[p2++];
+                    }
+                    else{
+                        Tail->lhc=pt->ofB[p2++];
+                        Tail=pt->ofB[p2++];;
+                    }
                     continue;
                 }
                 if (p2==pt->ofcnt){
-                    cur->lhc=pt->mainB[p1++];
-                    cur=cur->lhc;
+                    if (Head=NULL){
+                        Head=pt->mainB[p1++];
+                        Tail=pt->mainB[p1++];
+                    }
+                    else{
+                        Tail->lhc=pt->mainB[p1++];
+                        Tail=pt->mainB[p1++];
+                    }
                     continue;
                 }
                 if (pt->mainB[p1]->cmpMeTPer(pt->ofB[p2])){
-                    cur->lhc=pt->ofB[p2++];
-                    cur=cur->lhc;
+                    if (Head=NULL){
+                        Head=pt->ofB[p2++];
+                        Tail=pt->ofB[p2++];
+                    }
+                    else{
+                        Tail->lhc=pt->ofB[p2++];
+                        Tail=pt->ofB[p2++];;
+                    }
                     continue;
                 }
                 else{
-                    cur->lhc=pt->mainB[p1++];
-                    cur=cur->lhc;
+                    if (Head=NULL){
+                        Head=pt->mainB[p1++];
+                        Tail=pt->mainB[p1++];
+                    }
+                    else{
+                        Tail->lhc=pt->mainB[p1++];
+                        Tail=pt->mainB[p1++];
+                    }
                     continue;                  
                 }
             }
@@ -80,16 +104,20 @@ MeTPerson* PerDB::popTopn(int num){
         }
         else{
             while (num){
-                if (cur!=NULL)
-                    cur->lhc=pt->topPer();
-                cur=cur->lhc;
-                if (cur)
-                    pt->deleteB(cur);
+                if (Head=NULL){
+                    Head=pt->topPer();
+                    Tail=Head;
+                }
+                else{
+                    Tail->lhc=pt->topPer();
+                    Tail=Tail->lhc;
+                }
+                pt->deleteB(Tail);
                 num--;
             }
         }
     }
-    return Guard->lhc;
+    return Head;
 }
 
  
