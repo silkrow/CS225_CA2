@@ -41,7 +41,7 @@ void Test::terminal_loop(){
 	/* Main loop of the command line. */
 	do{
 		char line2[1024];
-		printf("CS225_CA1:> ");
+		printf("CS225_CA:> ");
 		line = terminal_readln();
 		strcpy(line2, line);
 		args = split_line(line);
