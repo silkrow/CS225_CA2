@@ -18,7 +18,7 @@ class PerDB{
     
     void insertPer(MeTPerson* tmp, IntNode* block);
     void deletePer(MeTPerson* tmp, IntNode* block);
-    
+    void PoPTop();
     private:
 };
 
