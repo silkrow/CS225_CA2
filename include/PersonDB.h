@@ -15,10 +15,11 @@ class PerDB{
     IntNode* topNode;
     IntNode* createBlock(); // initialize
     MeTPerson* popTopn(int num); // get top num elements in the database
-    
+    MeTPerson* popTopone();
+
     void insertPer(MeTPerson* tmp, IntNode* block);
     void deletePer(MeTPerson* tmp, IntNode* block);
-    void PoPTop();
+    
     private:
 };
 

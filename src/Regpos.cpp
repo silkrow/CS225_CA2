@@ -4,6 +4,7 @@
 #include "MeTsystem.h"
 #include "BPlusTree.h"
 #include "BTree.h"
+#include "FibHeap.h"
 
 #include <iostream>
 #include <string>
@@ -22,11 +23,11 @@ RegPos::RegPos(int id){//Initialization
 	this->cnt = 0;
 }
 
-void RegPos::forwardInf(BPTree* B1, BTree* B2, MeTPerson** db){//Upload information in local queue into centralized queue
+void RegPos::forwardInf(FibHeap* FH, BPTree* B1, BTree* B2, MeTPerson** db){//Upload information in local queue into centralized queue
     for(int i = cur; i < cnt; i++){
 		if (db[locList[i]]->tmpSt == 3) continue;
-        //NodePerson* newp = FH->insert(db[locList[i]]);
-        //db[locList[i]]->Fibnode = newp;
+        NodePerson* newp = FH->insert(db[locList[i]]);
+        db[locList[i]]->Fibnode = newp;
         B1->insert(db[locList[i]]);
        // printf("inb2\n");
         B2->insert(db[locList[i]]);

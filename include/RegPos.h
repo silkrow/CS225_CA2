@@ -20,7 +20,7 @@ class RegPos{
     //queue<int> RegPid;
     int cur; // current update pos
     int cnt; // total number of person
-    void forwardInf(BPTree* B1,BTree* B2, MeTPerson** db);
+    void forwardInf(FibHeap* FH, BPTree* B1,BTree* B2, MeTPerson** db);
 };
 
 #endif

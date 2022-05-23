@@ -242,13 +242,13 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 			nextDay(); // perform the calculation today. 
 
 			for (int j = 0; j < mySys->numReg; j++){ // Here forwarding information is performed once a day, but you can do it twice if you'd like to.
-				mySys->dbReg[j + 1]->forwardInf(mySys->BPT, mySys->BT, mySys->dbPerson);
+				mySys->dbReg[j + 1]->forwardInf(mySys->FH, mySys->BPT, mySys->BT, mySys->dbPerson);
 			}
 
 			if (mySys->totass != 0){ // Generate some total withdraw.
 				for (int j = 1; j <= mySys->totass; j++){
 					if (rand()%20 == 0){
-						mySys->dbPerson[mySys->assid[j]]->withdraw(mySys->BPT, mySys->BT);
+						mySys->dbPerson[mySys->assid[j]]->withdraw(mySys->FH, mySys->BPT, mySys->BT);
 						printf("pid %d didn't come!\n", mySys->assid[j]);
 					} 
 				}
@@ -382,7 +382,7 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 					printf("Invalid pid!\n");
 					return 1;
 				}
-				mySys->dbPerson[pid]->withdraw(mySys->BPT, mySys->BT); 
+				mySys->dbPerson[pid]->withdraw(mySys->FH, mySys->BPT, mySys->BT); 
 				printf("Withdraw performed.\n");
 				return 1;
 			case 2: // Edit
@@ -470,13 +470,13 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 							printf("Input new profession(0~8): ");
 							fgets(s, 100, stdin);
 							i1 = atoi(s);
-							mySys->dbPerson[pid]->updPro(i1);
+							mySys->dbPerson[pid]->updPro(mySys->FH, i1);
 							break;
 						case 7: // risk modification.
 							printf("Input new risk(0~2): ");
 							fgets(s, 100, stdin);
 							i1 = atoi(s);
-							mySys->dbPerson[pid]->updRiskSt(i1);
+							mySys->dbPerson[pid]->updRiskSt(mySys->FH, i1);
 							break;
 						case 8: //priority letter.
 							mySys->dbPerson[pid]->priLetter = 1;
@@ -554,7 +554,7 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 					printf("Invalid #registration station.\n");
 					return 1;
 				}
-				mySys->dbReg[reg]->forwardInf(mySys->BPT, mySys->BT, mySys->dbPerson);
+				mySys->dbReg[reg]->forwardInf(mySys->FH, mySys->BPT, mySys->BT, mySys->dbPerson);
 				return 1;	
 			case 5: // For update of injection station.
 				printf("Which injection station?\n");
@@ -583,7 +583,7 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 						printf("#%d of them has pid: ", k+1);
 						fgets(s, 100, stdin);
 						pid = atoi(s);
-						mySys->dbPerson[pid]->withdraw(mySys->BPT, mySys->BT);
+						mySys->dbPerson[pid]->withdraw(mySys->FH, mySys->BPT, mySys->BT);
 					}
 					return 1;
 				}

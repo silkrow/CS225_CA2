@@ -70,7 +70,7 @@ class MeTsystem {
 
         bool datecmp(string s1, string s2);
 
-        //FibHeap* FH;
+        FibHeap* FH;
         PriLet* PL;
         UpAge* UA;
         BPTree* BPT;
