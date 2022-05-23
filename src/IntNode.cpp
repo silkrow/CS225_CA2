@@ -9,7 +9,7 @@
 
 using namespace std;
 
-IntNode::IntNode(){
+IntNode::IntNode(){// Initialization, create memory space for pointers
     this->maincnt=0;
     this->ofcnt=0;
     this->tombcnt=0;
@@ -20,9 +20,9 @@ IntNode::IntNode(){
 		ofB[i] = new MeTPerson();
 }
 
-void IntNode::Adjustof(){
+void IntNode::Adjustof(){//sort the overflow block
     for (int i=0;i<ofcnt;i++)
-        for (int j=i;j<ofcnt-1;j++)
+        for (int j=i;j<ofcnt-1;j++)// because of its extremely small size, we use bubble sort
             if (ofB[j]->cmpMeTPer(ofB[j+1])){
                 MeTPerson* tmp = new MeTPerson();
                 tmp=ofB[j];
@@ -32,11 +32,11 @@ void IntNode::Adjustof(){
 
 }
 
-int IntNode::Num(){
+int IntNode::Num(){//calculate the current number of person in this block
     return this->maincnt+this->ofcnt-this->tombcnt;
 }
 
-void IntNode::insertB(MeTPerson* tmp){
+void IntNode::insertB(MeTPerson* tmp){//insert a person in this block
     //cout<<ofcnt<<endl;
     //ofcnt = 0;
     tmp->dbblock = this;
@@ -45,27 +45,27 @@ void IntNode::insertB(MeTPerson* tmp){
         ofB[ofcnt++]=tmp;
         return;
     }
-    this->sortB();
+    this->sortB();//block is full, split and sort it(make the overflow block empty)
     ofB[ofcnt++]=tmp;
 }
 
 int IntNode::Find(MeTPerson* tmp){
     for (int i=0;i<ofcnt;i++)
         if (ofB[i]==tmp)
-            return -2;
+            return -2;	//if the person in the overflow block return -2
     int l=0,r=maincnt-1;
     if (l<=r){
         int mid=(l+r)/2;
         if (mainB[mid]==tmp){
             if (mainB[mid]->tombmark)
                 return -1;
-            return mid;
+            return mid;//return its index
         }
         if (mainB[mid]->cmpMeTPer(tmp)==0)
             l=mid+1;
         else r=mid-1;
     }
-    return -1;
+    return -1;//not found, return -1
 }
 
 void IntNode::deleteB(MeTPerson* tmp){
@@ -79,17 +79,18 @@ void IntNode::deleteB(MeTPerson* tmp){
         for (int i=p;i<ofcnt-1;i++)
             ofB[i]=ofB[i+1];
         ofcnt--;
+	//move the person out of overflow block
     }
     else{
-        mainB[fres]->tombmark=1;
+        mainB[fres]->tombmark=1;//mark the person as tomb
         tombcnt++;
     }
-    if (Num()<maincap/mergefactor)
+    if (Num()<maincap/mergefactor)//elements are too few, merge the block with its neighbor
         mergeB();
     tmp->dbblock = NULL;
 }
 
-MeTPerson* IntNode::topPer(){
+MeTPerson* IntNode::topPer(){//return the top element
     MeTPerson* res;
     res=NULL;
     int p1=0,p2=0;
@@ -107,7 +108,7 @@ MeTPerson* IntNode::topPer(){
     return res;
 }
 
-void IntNode::mergeB(){
+void IntNode::mergeB(){//merge the block with its right neighbor
     this->sortB();
     if (this->rightNeighbor==this)
         return;
@@ -136,7 +137,8 @@ void IntNode::mergeB(){
         else
             a[p++]=this->mainB[p1++];
     }
-    if (this->maincnt+pt->maincnt<=maincap){
+	//put all elements in the 2 block2 (overflow+main) into a sorted
+    if (this->maincnt+pt->maincnt<=maincap){//can be put into 1 block
         IntNode* pt_next;
         pt_next=pt->rightNeighbor;
 
@@ -163,6 +165,7 @@ void IntNode::mergeB(){
         this->mainB[i]=a[i],a[i]->dbblock=this;
     for (int i=0;i<p/2;i++)
         pt->mainB[i]=a[(p+1)/2+i],pt->mainB[i]->dbblock=pt;
+	//distribute equally into 2 blocks
 }
 void IntNode::splitB(){
     MeTPerson* a[23];
@@ -206,6 +209,7 @@ void IntNode::splitB(){
     pt_r->leftNeighbor=this;
     pt_r->rightNeighbor=pt_next;
     pt_next->leftNeighbor=pt_r;
+	//adjust the linked list of blocks
 }
 
 void IntNode::sortB(){
