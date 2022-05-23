@@ -120,6 +120,10 @@ MeTPerson* PerDB::popTopn(int num){
     return Head;
 }
 
+void PerDB::PoPTop(){
+    MeTPerson* pt=topNode->topPer();
+    topNode->deleteB(pt);
+}
  
 void PerDB::insertPer(MeTPerson* tmp, IntNode* block){ 
     //block->insertB(tmp);
