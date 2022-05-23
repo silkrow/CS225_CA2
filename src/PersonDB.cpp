@@ -13,7 +13,7 @@ PerDB::PerDB(){
     topNode = createBlock();
 }
 
-IntNode* PerDB::createBlock(){
+IntNode* PerDB::createBlock(){//create a new block in the PerDB system
     IntNode* pt = new IntNode();
     pt->maincnt=0;
     pt->ofcnt=0;
@@ -23,7 +23,7 @@ IntNode* PerDB::createBlock(){
     return pt;
 }
 
-MeTPerson* PerDB::popTopone(){
+MeTPerson* PerDB::popTopone(){//pop the topest element
     IntNode* top = this->topNode;
     top->sortB();
     MeTPerson* ret;
@@ -37,11 +37,11 @@ MeTPerson* PerDB::popTopone(){
 
 }
 
-MeTPerson* PerDB::popTopn(int num){
+MeTPerson* PerDB::popTopn(int num){//pop the topest n element
     IntNode* pt=topNode;
     MeTPerson* Head=new MeTPerson();
     MeTPerson* Tail=new MeTPerson();
-    Head=NULL;
+    Head=NULL;//The head and tail for the result linked list
     Tail=NULL;
     bool f1=0;
 
@@ -50,7 +50,7 @@ MeTPerson* PerDB::popTopn(int num){
             break;
         if (pt==topNode)
             f1=1;
-        if (pt->Num()<=num){
+        if (pt->Num()<=num){//If the whole block should be pop
             num-=pt->Num();
 
             int p1=0,p2=0;
@@ -61,7 +61,7 @@ MeTPerson* PerDB::popTopn(int num){
                 if (p1==pt->maincnt){
                     if (Head==NULL){
                         Head=pt->ofB[p2++];
-                        Tail=Head;
+                        Tail=Head;// add the element in the tail
                     }
                     else{
                         Tail->lhc=pt->ofB[p2++];
@@ -129,6 +129,7 @@ MeTPerson* PerDB::popTopn(int num){
                 pt->deleteB(Tail);
                 num--;
             }
+            //If only a few elements remaining need poping, pop it 1 by 1
         }
     }
     return Head;
