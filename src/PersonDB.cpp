@@ -45,46 +45,46 @@ MeTPerson* PerDB::popTopn(int num){
                 while (p1<pt->maincnt&&pt->mainB[p1]->tombmark)
                     pt->mainB[p1++]->tombmark=0;
                 if (p1==pt->maincnt){
-                    if (Head=NULL){
+                    if (Head==NULL){
                         Head=pt->ofB[p2++];
-                        Tail=pt->ofB[p2++];
+                        Tail=Head;
                     }
                     else{
                         Tail->lhc=pt->ofB[p2++];
-                        Tail=pt->ofB[p2++];;
+                        Tail=Tail->lhc;
                     }
                     continue;
                 }
                 if (p2==pt->ofcnt){
-                    if (Head=NULL){
+                    if (Head==NULL){
                         Head=pt->mainB[p1++];
-                        Tail=pt->mainB[p1++];
+                        Tail=Head;
                     }
                     else{
                         Tail->lhc=pt->mainB[p1++];
-                        Tail=pt->mainB[p1++];
+                        Tail=Tail->lhc;
                     }
                     continue;
                 }
                 if (pt->mainB[p1]->cmpMeTPer(pt->ofB[p2])){
-                    if (Head=NULL){
+                    if (Head==NULL){
                         Head=pt->ofB[p2++];
-                        Tail=pt->ofB[p2++];
+                        Tail=Head;
                     }
                     else{
                         Tail->lhc=pt->ofB[p2++];
-                        Tail=pt->ofB[p2++];;
+                        Tail=Tail->lhc;
                     }
                     continue;
                 }
                 else{
-                    if (Head=NULL){
+                    if (Head==NULL){
                         Head=pt->mainB[p1++];
-                        Tail=pt->mainB[p1++];
+                        Tail=Head;
                     }
                     else{
                         Tail->lhc=pt->mainB[p1++];
-                        Tail=pt->mainB[p1++];
+                        Tail=Tail->lhc;
                     }
                     continue;                  
                 }
@@ -104,7 +104,7 @@ MeTPerson* PerDB::popTopn(int num){
         }
         else{
             while (num){
-                if (Head=NULL){
+                if (Head==NULL){
                     Head=pt->topPer();
                     Tail=Head;
                 }
