@@ -363,6 +363,24 @@ int Test::terminal_execute(MeTsystem* mySys, char **args)
 			return 1;
 		}
 	}
+	
+	if(strcmp(args[0], "search_pid") == 0 && args[1] == 0){
+		char s[100];
+		int pid;
+		printf("Input PID.\n");
+		fgets(s, 100, stdin);
+		pid = atoi(s);
+		if (pid <= 0 || pid > mySys->nPer){
+				printf("Invalid pid!\n");
+			return 1;
+		}
+		printf("The infomation for patient with PID %d is:\n", pid);
+
+		mySys->printpers(pid); 
+
+		return 1;
+	}
+
 
 	if ((strcmp(args[0], "set") == 0 || strcmp(args[0], "s") == 0) && args[1] == NULL) { 
 		printf("1: withdraw, 2: edit, 3: create, 4: call local update, 5: injection station info\n");

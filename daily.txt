@@ -1,3 +1,8 @@
 Daily Report
-2022-07-11-00-00-00
-Total number of people assigned: 0
+2022-10-01-00-00-00
+Total number of people assigned: 5
+PID = 39, Injection ID = 2
+PID = 85, Injection ID = 2
+PID = 485, Injection ID = 1
+PID = 756, Injection ID = 1
+PID = 862, Injection ID = 1

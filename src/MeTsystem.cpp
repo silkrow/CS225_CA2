@@ -721,3 +721,35 @@ void MeTsystem::AssignInj(){
         dbPerson[i]->idInjPos=res;
     }
 }
+
+void MeTsystem::printpers(int pid){
+    printf("pid = %d, name = %s\n", pid, this->dbPerson[pid]->name.c_str());
+    printf("phone number = %s\n",this->dbPerson[pid]->phonen.c_str());
+    printf("phone wechat = %s\n",this->dbPerson[pid]->WeChatn.c_str());
+    printf("dateofbirth = %s\n",this->dbPerson[pid]->dateBirth.c_str());
+    printf("agegroup = %d\n",this->dbPerson[pid]->ageGroup);
+    printf("profession = %d\n",this->dbPerson[pid]->profession);
+    printf("risk = %d\n",this->dbPerson[pid]->riskSt);
+    printf("email = %s\n",this->dbPerson[pid]->eMailn.c_str());
+    //0-In local 1-Centralized 2-Arranged injection 3-withdraw 4-Complete injection
+    if(this->dbPerson[pid]->tmpSt == 0){
+        printf("%s is in local\n",this->dbPerson[pid]->name.c_str());
+    }
+    else if(this->dbPerson[pid]->tmpSt == 1){
+        printf("%s is waiting\n",this->dbPerson[pid]->name.c_str());
+    }
+    else if(this->dbPerson[pid]->tmpSt == 2){
+        printf("%s is arranged\n",this->dbPerson[pid]->name.c_str());
+        printf("arranged injection position is %d\n",this->dbPerson[pid]->idInjPos);
+    }
+	else if(this->dbPerson[pid]->tmpSt == 3){
+        printf("%s has been withdrawn\n",this->dbPerson[pid]->name.c_str());
+    }
+
+
+
+    else{
+        printf("Injections have been completed\n");
+    }
+
+}

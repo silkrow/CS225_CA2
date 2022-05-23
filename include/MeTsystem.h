@@ -75,6 +75,8 @@ class MeTsystem {
         UpAge* UA;
         BPTree* BPT;
         BTree* BT;
+
+        void printpers(int pid);
 };
 
 #endif

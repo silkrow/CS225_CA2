@@ -170,7 +170,6 @@ void BTree::btree_delete_nonone(btree_nodes *root, MeTPerson *target){
 			btree_nodes_num-=1;
 			
 		} else{ // cannot find even in leaf
-			printf("target not found\n");
 		}
 	} else {
 		int i = 0;
